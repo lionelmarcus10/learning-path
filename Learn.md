@@ -1,0 +1,1 @@
+# all ressources and learned things 
