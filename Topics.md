@@ -4,3 +4,4 @@
 - Active Directory
 - injection sql
 - metasploit ( go deeper )
+- Nmap
