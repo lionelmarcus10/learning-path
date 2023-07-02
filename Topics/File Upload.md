@@ -160,3 +160,5 @@
 ###### [_synactiv_](https://www.synacktiv.com/en/publications/persistent-php-payloads-in-pngs-how-to-inject-php-code-in-an-image-and-keep-it-there)
 
 ###### [_file signature ( magic bytes )_](https://en.wikipedia.org/wiki/List_of_file_signatures)
+
+###### _intruder payloads_

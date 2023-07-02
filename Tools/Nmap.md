@@ -1,5 +1,10 @@
 # Nmap
 ----
+```bash
+# faire passer les requettes par burp
+nmap --proxies http://127.0.0.1:8080
+```
+----
 ## Scanning Options
 
 | **Nmap Option** | **Description** |
@@ -30,6 +35,7 @@
 | `-S 10.10.10.200` | Specifies the source IP address for the scan. |
 | `-g` | Specifies the source port for the scan. |
 | `--dns-server <ns>` | DNS resolution is performed by using a specified name server. |
+
 
 
 
