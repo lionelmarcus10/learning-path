@@ -56,6 +56,8 @@ openssl s_client -ign_eof 2>/dev/null <<<$'HEAD / HTTP/1.0\r\n\r' -connect "${TA
 
 gobuster dns -q -r "${NS}" -d "${TARGET}" -w "${WORDLIST}" -p ./patterns.txt -o "gobuster_${TARGET}.txt"
 # NS ( name server ) WORLIST ( seclist pattern ) TARGET étant des variables bash
+
+ffuf #vhost
 ```
 ###### Technologies & headers
 _tool_
@@ -73,6 +75,17 @@ _headers_
 # header info
 curl -I "http://${TARGET}"
 ```
+_VHOST fuzzing_
+```bash
+# get all the page
+curl -s <link(http://10.10....)> -H "Host: <AddressName(google.com)>"
+
+# Seclist vhosts : SecLists/Discovery/DNS/namelist.txt
+
+# fuzzing de Vhost avec dictionnaire ./vhosts
+cat ./vhosts | while read vhost;do echo "\n********\nFUZZING: ${vhost}\n********";curl -s -I http://192.168.10.10 -H "HOST: ${vhost}.randomtarget.com" | grep "Content-Length: ";done
+```
+
 -------
 ###### Tools
 * [The Harvester](https://github.com/laramies/theHarvester)

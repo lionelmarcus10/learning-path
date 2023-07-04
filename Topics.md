@@ -5,3 +5,8 @@
 - injection sql
 - metasploit ( go deeper )
 - Nmap
+- LFI
+- File Upload
+- XXE
+- XSS
+

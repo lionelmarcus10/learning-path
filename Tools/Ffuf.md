@@ -1,22 +1,38 @@
 # Ffuf - WEB ENUMERATION
 
-
->**dictionnaire in Seclist for directory/file :** SecLists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ
-
->**dictionnaire in Seclist for files extension :** SecLists/Discovery/Web-Content/web-extensions.txt:FUZZ
-
-> **dicrionnaire in seclist for subdomain :** SecLists/Discovery/DNS/subdomains-top1million-5000.txt
-
-
 ```bash
+# toujours ajouter -v -c
+# ne pas oublier d'ajouter le sous domaine que tu fuzz dans /etc/hosts
+
 # augmenter le nombre de tentative
 ffuf -t 200 
+
 # url for directory -c (couleur) -v (afficher)
 ffuf -w <dico> -u <URL/FUZZ>
+
 # url for file extension
 ffuf -w <dico> -u <URL/direcroy/[PageName]FUZZ>
+
 # specifier l'extension ( -e ) en cas d'utilisation du recursif (-recursion):
 ffuf -w wordlist.txt:FUZZ -u link.com/FUZZ -recursion -e .php .html
+
+# vhost and subdomain
+ffuf -w wordlist.txt:FUZZ -u http://academy.htb:PORT/ -H 'Host: FUZZ.academy.htb' -fs <Size>
+
+# parameter fuzzing get
+ffuf -w wordlist.txt:FUZZ -u <link>?FUZZ=<key | website special string >
+
+# parameter fuzzing post
+ffuf -w wordlist.txt:FUZZ -u <link> -X POST -d 'FUZZ=< key | WebsiteSpecificElement>' -H 'Content-Type: application/x-www-form-urlencoded' -fs <Size>
+
+# pour le fuzzing de valeur, on fait le fuzzing post mais avec 
+-d <Element>=FUZZ # avec un dico étant des nombres de 0 à Infini
+
+```
+
+```bash
+# post  with curl 
+curl <link> -X POST -d '<ELEMENTTOPOST>=<key>' -H 'Content-Type: application/x-www-form-urlencoded'
 ```
 ## Ffuf
 
