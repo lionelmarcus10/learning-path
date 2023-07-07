@@ -62,4 +62,6 @@ gobuster dns -d <link> -w <dico>
     # report : Target>Site map, right-click on our target, and select Issue>Report issues for this host
     ```
 ----
-###### [_Ffuf_](../Tools/Ffuf.md)
+###### [_Ffuf : web enumeration tool_](../Tools/Ffuf.md)
+
+##### [_Footprint : Enumeration cours and principles_](../HackTheBox/Academy/Footprinting.md)
