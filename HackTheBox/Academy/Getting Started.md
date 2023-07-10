@@ -111,3 +111,4 @@ dpkg -l
       /var/spool/cron/crontabs/root
       ``` 
     - SSH key search
+    - **Si l'attaquant à le id_rsa de la cible sur sa machine, pour pouvoir l'utiliser il doit faire un _chmod 400_**
