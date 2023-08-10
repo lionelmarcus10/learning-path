@@ -139,7 +139,14 @@ pour avoir accès au shell, on utilise
 ```bash
 <URLFilePath>?0=<cmd>
 ```
+---- 
+## Filter Bypass
 
+* remplacer les espaces par des tabs et convertir toute la requette en URL encode 
+* envoyer des requettes hex
+    ```
+    union select 0x<Reste du code en convertit en Hex>-- -
+    ```
 ----
 ### Protection
 ##### Anti escape de :  ' "

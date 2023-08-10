@@ -50,6 +50,10 @@ nmap --proxies http://127.0.0.1:8080
 | `-oG filename` | Stores the results in "grepable" format with the name of "filename". |
 | `-oX filename` | Stores the results in XML format with the name of "filename". |
 
+```bash
+# convertir en rapport html
+xsltproc target.<extension> -o target.html
+```
 
 
 ## Performance Options
@@ -91,8 +95,14 @@ Detecter le système à partir du TTL :
 * Windows : TTL = 128
 * Linux TTL = 64
 
+### Bypass techniques : 
 
+```bash
+# bypass ids to see if a port is open or close
+nmap -sT
+```
+#### Script nmap :
 
-
-
---------- reprendre à partir de : Host and Port Scanning
+```bash
+nmap <target> --script <script-name>,<script-name>,...
+```

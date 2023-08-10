@@ -65,3 +65,14 @@ curl <link> -X POST -d '<ELEMENTTOPOST>=<key>' -H 'Content-Type: application/x-w
 | `sudo sh -c 'echo "SERVER_IP  academy.htb" >> /etc/hosts'` | Add DNS entry |
 | `for i in $(seq 1 1000); do echo $i >> ids.txt; done` | Create Sequence Wordlist |
 | `curl http://admin.academy.htb:PORT/admin/admin.php -X POST -d 'id=key' -H 'Content-Type: application/x-www-form-urlencoded'` | curl w/ POST |
+
+-----
+### Notes : 
+
+* Lors du vhost/ subdomain fuzzing :  
+    - Etape 1 : utiliser la commande au dessus
+    - Etape 2 : mettre dans le /etc/hosts le ip + tous les noms de domaine afin de pouvoir enumerer ex : 
+        ```bash
+        <IP> <NormalName ( random.com)> <Subdomain 1 ( ex.random.com )> <Subdomain 2 ( test.random.com )> ...
+        ```
+    - Après étape 2 , on fuzz chaque sous domaine et domaine individuellement

