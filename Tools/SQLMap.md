@@ -61,6 +61,8 @@
 ## Énumération de la base de données
 
 ```bash 
+ # connect to db with credentials
+ sqlmap -d '<mysql| dbName>://<UserName>:<Pass>@<IP>:<Port | 3306>/<dbName ( facultatif)>' --schema | grep Database:  | uniq
 
  # architecture de la db
  --schema 

@@ -3,6 +3,11 @@
 ----
 * MySql/MariaDB default port : 3306
 ```bash
+# installation 
+sudo apt install mysql-server -y
+# config 
+cat /etc/mysql/mysql.conf.d/mysqld.cnf | grep -v "#" | sed -r '/^\s*$/d'
+
 #connect to db
 mysql -u <Username> -p
 -h <RemoteHost> -P <Port>

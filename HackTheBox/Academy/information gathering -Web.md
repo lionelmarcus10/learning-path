@@ -85,7 +85,12 @@ curl -s <link(http://10.10....)> -H "Host: <AddressName(google.com)>"
 # fuzzing de Vhost avec dictionnaire ./vhosts
 cat ./vhosts | while read vhost;do echo "\n********\nFUZZING: ${vhost}\n********";curl -s -I http://192.168.10.10 -H "HOST: ${vhost}.randomtarget.com" | grep "Content-Length: ";done
 ```
+__subdomain enum/ bruteforce__
+```bash
+dnsenum --dnsserver <Target-IP> --enum -p 0 -s 0 -o subdomains.txt -f /opt/useful/SecLists/Discovery/DNS/subdomains-top1million-110000.txt <DomaineName.com>
 
+for sub in $(cat /opt/useful/SecLists/Discovery/DNS/subdomains-top1million-110000.txt);do dig $sub<DomaineName.com> @<Target-IP> | grep -v ';\|SOA' | sed -r '/^\s*$/d' | grep $sub | tee -a subdomains.txt;done
+```
 -------
 ###### Tools
 * [The Harvester](https://github.com/laramies/theHarvester)

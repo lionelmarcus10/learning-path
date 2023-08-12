@@ -37,11 +37,11 @@
   
   1.  Verifier le certificat ssl et utiliser crt.sh
 
-    ```bash
-    curl -s https://crt.sh/\?q\=<Target.com>\&output\=json | jq .
-    # filtrer par subdomain 
-    <Command> | jq . | grep name | cut -d":" -f2 | grep -v "CN=" | cut -d'"' -f2 | awk '{gsub(/\\n/,"\n");}1;' | sort -u
-    ```
+  ```bash
+  curl -s https://crt.sh/\?q\=<Target.com>\&output\=json | jq .
+  # filtrer par subdomain 
+  <Command> | jq . | grep name | cut -d":" -f2 | grep -v "CN=" | cut -d'"' -f2 | awk '{gsub(/\\n/,"\n");}1;' | sort -u
+  ```
 
   2. Company Hosted Servers
   ```bash
@@ -98,12 +98,24 @@
     # listing recursif
     ls -R
     # telecharger tous les fichiers disponible
-    wget -m --no-passive ftp://<anonymous>:<password>@10.129.14.136/
+    wget -m --no-passive ftp://<anonymous | Username >:< anonymous | password>@10.129.14.136/
+
+    # interaction as anonymous
+    ftp <Target-IP> # username and password  : anonymous
 
     # service interaction 
     nc -nv <Tae=rget-IP> 21
     telnet <Tae=rget-IP> 21
     openssl s_client -connect <Tae=rget-IP>:21 -starttls ftp
+    
+
+    # scan
+    sudo nmap --script-updatedb 
+    find / -type f -name ftp* 2>/dev/null | grep scripts
+    nmap -sV -sC -A --script
+    # ftp-anon verify log of anonymous
+    # ftp-syst display infos
+    # script-trace
     ``` 
 
 - Explication config
@@ -155,6 +167,12 @@ smbclient -N -L //<Target-IP>
 smbclient -N -L //<Target-IP>/<Share-DirName>
 # restart 
 sudo systemctl restart smbd
+# download 
+get <FileName>
+# list or read 
+!cat | !ls
+# status 
+smbstatus
 ```
 
 | Setting |	Description |
@@ -176,6 +194,297 @@ sudo systemctl restart smbd
 | `logon script = script.sh` |	What script needs to be executed on the user's login? |
 | `magic script = script.sh` |	Which script should be executed when the script gets closed? |
 | `magic output = script.out` |
+- Remote Procedure Call ( RPC ) : The rpcclient offers us many different requests with which we can execute specific functions on the SMB server to get information.
+  ```bash
+  
+  rpcclient -U "" <IP-Target>
+  # exemaples 
+  srvinfo
+  enumdomains
+  querydominfo
+  netshareenumall
+  netsharegetinfo <ShareName>
+
+  # Rpcclient - User Enumeration
+  #1
+  enumdomusers
+  #2 
+   queryuser <UserRid (0x3e9) >
+
+  # Group enumeration 
+  querygroup <GroupRid>
+
+  # bruteforce user RID
+  for i in $(seq 500 1100);do rpcclient -N -U "" <Target-IP> -c "queryuser 0x$(printf '%x\n' $i)" | grep "User Name\|user_rid\|group_rid" && echo "";done
+  # or user samrdump.py
+  samrdump.py <Target-IP>
+  ```
+  - Use other tools : SMBmap, crackmapexec, Enum4Linux-ng 
+  ```bash
+  # smbmap
+  smbmap -H <Target-IP>
+
+  # CrackMapExec
+  crackmapexec smb <Target-IP> --shares -u '' -p ''
+
+  # Enum4Linux-ng 
+  git clone https://github.com/cddmp/enum4linux-ng.git
+  cd enum4linux-ng
+  pip3 install -r requirements.txt
+  #enumeration 
+  ./enum4linux-ng.py <Target-IP> -A
+  ```
+
+### NFS : Network File System
+
+* developed by Sun Microsystems and has the same purpose as SMB : access file systems over a network as if they were local.
+*  NFS is used between Linux and Unix systems.
+* Running Port : `2049` or 111
+*  no mechanism for authentication or authorization. but shield to RPC
+* commands 
+  ```bash
+  # config 
+  cat /etc/exports
+
+  # creation of NFS with exportfs
+  # share  /mnt/nfs to subnet  <My-IP>/< Number |24>
+  echo '/mnt/nfs   <My-IP>/< Number |24>(sync,no_subtree_check)' >> /etc/exports
+  systemctl restart nfs-kernel-server 
+  exportfs
+
+  ## COntact remote NFS
+  # show available NFS shares
+  showmount -e <Target-IP>
+  # Mounting NFS Share
+  mkdir <FolderToShare>
+  sudo mount -t nfs <Target-IP>:/ ./<FolderToShare>/ -o nolock
+  cd target-NFS
+  tree .
+  # unmount 
+  cd ..
+  sudo unmout ./<FolderToShare>
+
+
+
+  # detection 
+  nmap --script nfs* <other cmd>
+  ```
+
+### DNS : Domain Name System
+- utiliser dig pour plus d'infos
+
+
+| Server | Type	Description |
+|----|----|
+| DNS Root Server|	The root servers of the DNS are responsible for the top-level domains (TLD). As the last instance, they are only requested if the name server does not respond. Thus, a root server is a central interface between users and content on the Internet, as it links domain and IP address. The Internet Corporation for Assigned Names and Numbers (ICANN) coordinates the work of the root name servers. There are 13 such root servers around the globe.|
+| Authoritative Nameserver |	Authoritative name servers hold authority for a particular zone. They only answer queries from their area of responsibility, and their information is binding. If an authoritative name server cannot answer a client's query, the root name server takes over at that point. |
+| Non-authoritative Nameserver |	Non-authoritative name servers are not responsible for a particular DNS zone. Instead, they collect information on specific DNS zones themselves, which is done using recursive or iterative DNS querying. |
+| Caching DNS Server |	Caching DNS servers cache information from other name servers for a specified period. The authoritative name server determines the duration of this storage. |
+| Forwarding Server | 	Forwarding servers perform only one function: they forward DNS queries to another DNS server. |
+| Resolver |	Resolvers are not authoritative DNS servers but perform name resolution locally in the computer or router. |
+
+- cmd
+  ```bash
+  # configuration 
+  cat /etc/bind/named.conf.local
+  # A zone file is a text file that describes a DNS zone with the BIND file format.
+  cat /etc/bind/db.domain.com
+  # subdomain bruteforce
+  for sub in $(cat /opt/useful/SecLists/Discovery/DNS/subdomains-top1million-110000.txt);do dig $sub.<Domain.COM> @<Target-IP> | grep -v ';\|SOA' | sed -r '/^\s*$/d' | grep $sub | tee -a subdomains.txt;done
+
+  dnsenum --dnsserver <Target-IP> --enum -p 0 -s 0 -o subdomains.txt -f /opt/useful/SecLists/Discovery/DNS/subdomains-top1million-110000.txt <Domain.COM>
+  dig ns | any | axfr <DomainName.com>
+  ```
+
+
+### SMTP :  Simple Mail Transfer Protocol
+
+*  is a protocol for sending emails in an IP network
+
+* Port Running : `25` `587`
+
+* command
+  ```bash
+  # config
+  cat /etc/postfix/main.cf | grep -v "#" | sed -r "/^\s*$/d"
+
+
+  #interaction 
+  telnet <IP> <Port>
+
+  # VRFY <User-Name-To-Verify> 
+  #code 252 confirm user exist
+  # use footprint ressource wordlist
+
+  # use HELO | EHLO <Hostnanme>
+
+  # nmap script
+  nmap  --script smtp-open-relay <cmd>
+  ```
+
+### IMAP/POP3 : Internet Message Access Protocol  / Post Office Protocol
+
+* IMAP allows online management of emails directly on the server and supports folder structures. 
+
+* POP3 only provides listing, retrieving, and deleting emails as functions at the email server.
+ 
+* Port running : `143, 993, 110 995` ,  
+
+* command
+  ```bash
+  curl -k 'imaps://<Target-IP>' --user user:p4ssw0rd
+
+  # interaction POP3
+  openssl s_client -connect <Target-IP>:<pop3s | imaps >
+  ```
+
+### SNMP : Simple Network Management Protocol
+
+* was created to monitor network devices. In addition
+
+* . SNMP-enabled hardware includes routers, switches, servers, IoT devices, and many other devices that can also be queried and controlled using this standard protocol. 
+
+* Port running : `161` transmission, `162` traps
+
+*  Management Information Base (MIB)
+    * independent format for storing device information.
+    *  text file in which all queryable SNMP objects of a device are listed in a standardized tree hierarchy.
+    * written in Abstract Syntax Notation One (ASN.1)
+    * It contains at least one Object Identifier (OID)
+* OID :  represents a node in a hierarchical namespace.
+
+* Command
+  ```bash
+  # config
+  cat /etc/snmp/snmpd.conf | grep -v "#" | sed -r '/^\s*$/d'
+ 
+  # footprint tools : snmpwalk, onesixtyone, and braa. Snmpwalk
+  # Onesixtyone bruteforce name
+  snmpwalk -v2c -c public <Target-IP>
+
+  # bruteforce Name
+  sudo apt install onesixtyone
+  onesixtyone -c /opt/useful/SecLists/Discovery/SNMP/snmp.txt <Target-IP>
+  
+  # onesixtyone string in [] in results is the community string
+
+  # bruteforce individual OID
+  sudo apt install braa
+  # Syntax : braa <community string>@<IP>:.1.3.6.*
+
+  ```
+
+### MYSQL
+* [SQL Basics](./SQL%20basics.md)
+
+```bash 
+# scan 
+nmap --script mysql* <cmd> 
+```
+
+### MSSQL : Microsoft SQL 
+
+*  MSSQL is closed source and was initially written to run on Windows operating systems
+
+* Port running : `1433` , `3389`
+
+* Command
+  ```bash
+  # locate
+  locate mssqlclient
+  
+  # connection
+
+    #install inmpacket
+    python3 -m pipx install impacket
+    # run
+  mssqlclient.py Administrator@<IP> -windows-auth
+
+  # scan 
+  sudo nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,ms-sql-dac,ms-sql-dump-hashes --script-args mssql.instance-port=1433,mssql.username=sa,mssql.password=,mssql.instance-name=MSSQLSERVER -sV -p 1433 <IP>
+
+  ```
+  * We can also use Metasploit to run an auxiliary scanner called mssql_ping ( use set rhosts)
+
+**Ressources**
+* [hacktrick manual enum](https://book.hacktricks.xyz/network-services-pentesting/pentesting-mssql-microsoft-sql-server#common-enumeration)
+
+
+### Oracle TNS :  Oracle Transparent Network Substrate 
+
+*  communication protocol that facilitates communication between Oracle databases and applications over networks. 
+
+* Default port running : `1521` 
+
+*  client-side Oracle Net Services software uses the tnsnames.ora file to resolve service names to network addresses
+
+*  the listener process uses the listener.ora file to determine the services it should listen to and the behavior of the listener.
+* Oracle-Tools-setup.sh
+  ```bash
+  ####### enumeration 
+  sudo apt-get install libaio1 python3-dev alien python3-pip -y
+  git clone https://github.com/quentinhardy/odat.git
+  cd odat/
+  git submodule init
+  sudo submodule update
+  sudo apt install oracle-instantclient-basic oracle-instantclient-devel oracle-instantclient-sqlplus -y
+  pip3 install cx_Oracle
+  sudo apt-get install python3-scapy -y
+  sudo pip3 install colorlog termcolor pycryptodome passlib python-libnmap
+  sudo pip3 install argcomplete && sudo activate-global-python-argcomplete
+
+  #detect if it is a success
+  ./odat.py -h
+
+  # scan
+  nmap -p <Port > <IP> --open --script oracle-sid-brute
+  ./odat.py all -s <IP>
+
+  #login
+  sqlplus <Username>/<Password>@<IP>/XE; <as sysdba ( facultatif)>
+
+  #if error in login
+  sudo sh -c "echo /usr/lib/oracle/12.2/client64/lib > /etc/ld.so.conf.d/oracle-instantclient.conf";sudo ldconfig
+
+  # fileUpload 
+  curl -X GET http://<IP>/<FileName>
+  ./odat.py utlfile -s <IP> -d XE -U <Username> -P <Password> --sysdba --putFile <Hostlink ( C://...)> <FileName> ./<FileName>
+
+  ## manual enum
+  select table_name from all_tables;
+  select * from user_role_privs;
+  select name, password from sys.user$; # when log as sysdba
+  ```
+  * webshell : 
+  Linux `/var/www/html`
+  Window `C:\inetpub\wwwroot`
+
+### Intelligent Platform Management Interface
+
+* provides sysadmins with the ability to manage and monitor systems even if they are powered off or in an unresponsive state.
+* Running port : `UDP 623`
+* command
+  ```bash
+  # scan
+   sudo nmap -sU --script ipmi-version -p 623 <target-Ip>
+  # hash crack 
+   hashcat -m 7300 <Hash from msfconsole | fileName>
+
+   # enumeration : 
+   msfconsole 
+   use auxiliary/scanner/ipmi/ipmi_dumphashes
+  
+  ```
+  * use of  IPMI Information Discovery (auxiliary/scanner/ipmi/ipmi_version) with set rhosts
+* To retrieve IPMI hashes, we can use the Metasploit IPMI 2.0 RAKP Remote SHA1 Password Hash Retrieval module.
+  * use auxiliary/scanner/ipmi/ipmi_dumphashes with set rhosts
+
+
+### Linux Remote Management Protocols
+
+
+### Windows Remote Management Protocols
+
 
 
 **Ressources**
