@@ -12,6 +12,19 @@ cat /etc/mysql/mysql.conf.d/mysqld.cnf | grep -v "#" | sed -r '/^\s*$/d'
 mysql -u <Username> -p
 -h <RemoteHost> -P <Port>
 
+sqsh -S <IP> -U <username | .\\LOCALUSERNAME> -P '<Password>' -h
+
+
+# windows
+sqlcmd -S <IP | SRVMSSQL> -U <Username> -P '<Password>' -y 30 -Y 30
+
+#install inmpacket
+python3 -m pipx install impacket
+# run
+mssqlclient.py Administrator@<IP> -windows-auth
+
+
+
 # create db
 CREATE DATABASE <dbName>;
 #  show db

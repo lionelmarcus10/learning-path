@@ -386,7 +386,7 @@ nmap --script mysql* <cmd>
 
 *  MSSQL is closed source and was initially written to run on Windows operating systems
 
-* Port running : `1433` , `3389`
+* Port running : `1433` , `3389`, `2433` , UDP `1434`
 
 * Command
   ```bash

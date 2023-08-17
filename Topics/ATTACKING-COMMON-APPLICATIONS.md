@@ -38,7 +38,7 @@ nmap -p- <MainIP> -sV
 
 ## Content Management Systems (CMS) Attack
 
-<h3 style='text-align: center'>Wordpress</h3>
+### <h3 style='text-align: center'>Wordpress</h3>
 
 ###### Methodologie
 ```bash
@@ -64,8 +64,8 @@ sudo gem install wpscan
 sudo wpscan --url http://<Link> --enumerate --api-token <WPVulnDBApi>
 # number of thread : -t <Number>
 
-
-# authentification attack
+# authentification attack bruteforce
 sudo wpscan --password-attack xmlrpc -t 20 -U <Username> -P <PasswordDictionnary> --url http://<WebsiteLink>
-# 
 ```
+
+### <h3 style='text-align: center'>Joomla</h3>
