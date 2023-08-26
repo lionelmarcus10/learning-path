@@ -159,7 +159,7 @@ hydra -C <user_pass.list | Payload-All-The-Things-credentials> <protocol>://<IP>
 
 
 
-### Attacking SAM
+### I - Attacking SAM
 * SAM can be crack offline  if we are root
 
 #### Step 1 : Copying SAM Registry Hives
@@ -216,7 +216,7 @@ sudo hashcat -m 1000 <FileName | hashestocrack.txt > /usr/share/wordlists/rockyo
 ```
 ---
 
-### Attacking LSASS
+### II - Attacking LSASS
 
 Upon initial logon, LSASS will:
 * Cache credentials locally in memory
