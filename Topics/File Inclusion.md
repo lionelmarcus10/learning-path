@@ -219,10 +219,28 @@ http://<SERVER_IP>:<PORT>/<Vulnerable-Path-LFI>=/var/lib/php/sessions/sess_<Cook
     ffuf -w ./LFI-WordList-Linux:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?<Vulnerable-LFI-Path>=../../../../FUZZ'
     ```
 
+###### Prevention
+
+-  Avoid passing any user-controlled inputs into any file inclusion functions or APIs
+
+- The page should be able to dynamically load assets on the back-end, with no user interaction whatsoever
+
+- We should ensure that no user input is directly going into any function that can read files
+
+    -  utilize a limited whitelist of allowed user inputs, and match each input to the file to be loaded
+
+###### Preventing Directory Traversal
+
+- Use language built-in tool to pull only the filename.
+
+- We should globally disable the inclusion of remote files: `allow_url_fopen` and `allow_url_include` to Off.
+
+- Disable potentially dangerous modules, like PHP Expect mod_userdir.
+
+- Use WAF ( Web App Firewall) like `ModSecurity` 
+
 **Ressource**
 - [LFI wordlist Linux](https://raw.githubusercontent.com/DragonJAR/Security-Wordlist/main/LFI-WordList-Linux)
 - [LFI wordlist windows](https://raw.githubusercontent.com/DragonJAR/Security-Wordlist/main/LFI-WordList-Windows)
 - [HackTrick](https://book.hacktricks.xyz/pentesting-web/file-inclusion#top-25-parameters)
 - **Tool :** LFISuite, liffy, LFiFreak
-
-###### File Inclusion Prevention

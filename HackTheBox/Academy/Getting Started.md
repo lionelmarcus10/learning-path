@@ -6,8 +6,6 @@ ftp -p <IP Address>
 ```
 
 ###### SMB
-> SMB (Server Message Block) is a prevalent protocol on Windows machines that provides many vectors for vertical and lateral movement
-SMB allows users and administrators to share folders and make them accessible remotely by other users.
 
 ```bash
 # nmap script for smb

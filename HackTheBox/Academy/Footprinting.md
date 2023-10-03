@@ -63,6 +63,23 @@
 
 ## Host Based Enumeration
 
+## SSH
+
+```bash
+# connect with id_rsa
+ssh -i id_rsa <username>@<IP>
+
+# crack id_rsa
+  # download ssh2john
+  wget https://raw.githubusercontent.com/magnumripper/JohnTheRipper/bleeding-jumbo/run/ssh2john.py
+  # convert to crack
+  python ssh2john.py id_rsa > id_rsa.hash
+  # crack 
+  john --wordlist=< Wordlist | darkweb2017-top10.txt > id_rsa.hash
+  # show hash
+  john --show id_rsa.hash
+```
+
 ### FTP : File Trasfert Protocol
 
 **FTP** 
@@ -98,7 +115,7 @@
     # listing recursif
     ls -R
     # telecharger tous les fichiers disponible
-    wget -m --no-passive ftp://<anonymous | Username >:< anonymous | password>@10.129.14.136/
+    wget -m --no-passive ftp://<anonymous | Username >:< anonymous | password>@<IP>/
 
     # interaction as anonymous
     ftp <Target-IP> # username and password  : anonymous
@@ -241,12 +258,14 @@ smbstatus
 *  NFS is used between Linux and Unix systems.
 * Running Port : `2049` or 111
 *  no mechanism for authentication or authorization. but shield to RPC
+* `Passer root sur le share ou avant d'entrer dans le share`
 * commands 
   ```bash
   # config 
   cat /etc/exports
 
   # creation of NFS with exportfs
+  sudo apt install nfs-kernel-server
   # share  /mnt/nfs to subnet  <My-IP>/< Number |24>
   echo '/mnt/nfs   <My-IP>/< Number |24>(sync,no_subtree_check)' >> /etc/exports
   systemctl restart nfs-kernel-server 

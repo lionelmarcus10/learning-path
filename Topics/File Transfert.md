@@ -361,10 +361,10 @@ Copy-Item -Path C:\<File¨Path> -ToSession $Session -Destination C:\<NewPath>
 ```bash
 # linux
 # mount server using rdesktop
-rdesktop 10.10.10.132 -d HTB -u <Username> -p '<Password>' -r disk:linux='/home/user/rdesktop/files'
+rdesktop <IP> -d HTB -u <Username> -p '<Password>' -r disk:linux='/home/user/rdesktop/files'
 
 #using xfreerdp
-xfreerdp /v:10.10.10.132 /d:HTB /u:<Username> /p:'<Password>' /drive:linux,/home/plaintext/htb/academy/filetransfer
+xfreerdp /v:<IP> /d:HTB /u:<Username> /p:'<Password>' /drive:linux,/home/plaintext/htb/academy/filetransfer
 
 # how to connect : use :
 \\tsclient\
