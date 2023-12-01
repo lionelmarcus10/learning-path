@@ -1,0 +1,197 @@
+{
+  "main": {
+    "id": "4f744fd011b5bdc6",
+    "type": "split",
+    "children": [
+      {
+        "id": "ea7f9fe3b7779447",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2d8a8e865da74e73",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "BlueTeamLabs/Log Analysis - Sysmon.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "1335f38ab524f85f",
+    "type": "split",
+    "children": [
+      {
+        "id": "6802cdf41a7952f1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "03be09d23e6cd916",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "6a29ffa508b9a9e9",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "98039ce2afb47dff",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "4323e639af238e66",
+    "type": "split",
+    "children": [
+      {
+        "id": "b769c72163292285",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "420eaad049e45d0d",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "BlueTeamLabs/Log Analysis - Sysmon.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "ad6f0b77c3aa7f8e",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "BlueTeamLabs/Log Analysis - Sysmon.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "12ac818e26d5de5f",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "6dc2af885c9ddcff",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "BlueTeamLabs/Log Analysis - Sysmon.md"
+              }
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "2d8a8e865da74e73",
+  "lastOpenFiles": [
+    "BlueTeamLabs/Malicious PowerShell Analysis.md",
+    "BlueTeamLabs/Log Analysis - Privilege Escalation.md",
+    "BlueTeamLabs/Log Analysis - Sysmon.md",
+    "BlueTeamLabs/D3FEND.md",
+    "BlueTeamLabs/Browser-Forensic-CryptoMiner.md",
+    "BlueTeamLabs/Barcode World.md",
+    "BlueTeamLabs/Meta.md",
+    "BlueTeamLabs/Secret.md",
+    "BlueTeamLabs/Secure Shell.md",
+    "BlueTeamLabs/Shiba-Insider.md",
+    "BlueTeamLabs/Source.md",
+    "BlueTeamLabs/The Report II.md",
+    "BlueTeamLabs/The Report.md",
+    "BlueTeamLabs/Spectrum.md",
+    "Rootme/WriteUps/Steganographie/Twitter Secret Messages.md",
+    "Rootme/WriteUps/Steganographie/Steganomobile.md",
+    "Topics/Linux Privilege Escalation.md",
+    "Rootme/WriteUps/Untitled.md",
+    "Rootme/WriteUps/Steganographie",
+    "Topics/File Inclusion.md",
+    "Rootme/WriteUps/Web - Client/Javascript - Authentification.md",
+    "Rootme/WriteUps/Web - Client/HTML - boutons désactivés.md",
+    "Rootme/WriteUps/Cryptanalyse/Substitution polyalphabétique - Vigenère.md",
+    "Rootme/WriteUps/Web - Client",
+    "Rootme/WriteUps/Cryptanalyse/CISCO - Salted Password.md",
+    "Rootme/WriteUps/Cryptanalyse/Chiffrement par décalage.md",
+    "Rootme/WriteUps/Cryptanalyse/Substitution monoalphabétique - César.md",
+    "Rootme/WriteUps/Cryptanalyse/Encodage - ASCII.md",
+    "Rootme/WriteUps/Cryptanalyse",
+    "Ressources/IMG/BlueTeamLabs/BTLO-D3FEND.png",
+    "Ressources/IMG/0-info-gat-web-01.png",
+    "Untitled.canvas",
+    "Emploi du temps cyber.canvas",
+    "Pasted image 20231111094943.png",
+    "Ressources/IMG/HTB/Machines/Keeper/Machine-Keeper-12.png",
+    "Ressources/IMG/HTB/Machines/Keeper/Machine-Keeper-11.png",
+    "Ressources/IMG/HTB/Machines/Keeper/Machine-Keeper-10.png",
+    "Ressources/IMG/HTB/Machines/Keeper/Machine-Keeper-09.png",
+    "Ressources/IMG/HTB/Machines/Keeper/Machine-Keeper-04.png",
+    "Ressources/IMG/HTB/Machines/Keeper/Machine-Keeper-08.png",
+    "Ressources/IMG/HTB/Machines/Keeper/Machine-Keeper-07.png",
+    "Ressources/IMG/HTB/Machines/Keeper",
+    "Ressources/IMG/HTB/Machines/Lame",
+    "Ressources/IMG/HTB/Machines",
+    "Ressources/IMG/HTB"
+  ]
+}

