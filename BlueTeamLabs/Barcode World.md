@@ -15,6 +15,7 @@ pip3 install pyzbar opencv-python
 
 cd Barcode_World
 ```
+## Solution
 
 ```python
 from pyzbar import pyzbar

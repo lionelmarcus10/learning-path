@@ -8,6 +8,12 @@
 # enumeration passive
 whatweb --norerror <ip>
 ```
+
+---
+###### wfuzz
+```
+wfuzz -c -z file,<usernames.txt> -z file,<passwords.txt> --hs < hide result with string |  "Please enter the correct credentials"> -u <URL> -d <"< parametername | username>=FUZZ&<parametername | password>=FUZ2Z">
+```
 ----
 ###### dirbuster et dirb
 ----

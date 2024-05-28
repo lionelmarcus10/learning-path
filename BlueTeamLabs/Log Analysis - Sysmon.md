@@ -5,13 +5,17 @@
 You are provided with Sysmon logs from a compromised endpoint. Analyse the logs to find out the steps and techniques used by the attacker.
 ```
 
+```
 
+```
 ## Challenge Submission
 
 ### What is the file that gave access to the attacker? _(2 points)_
 
 
+
 ```
+
 ```
 
 ### What is the powershell cmdlet used to download the malware file and what is the port? _(2 points)_

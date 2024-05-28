@@ -4,22 +4,45 @@
     "type": "split",
     "children": [
       {
-        "id": "ea7f9fe3b7779447",
+        "id": "2c2f68d37dc91930",
         "type": "tabs",
         "children": [
           {
-            "id": "2d8a8e865da74e73",
+            "id": "9192941a12162251",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "BlueTeamLabs/Log Analysis - Sysmon.md",
+                "file": "Process.md/Pentest Process.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "c9e7131dc197c5b5",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.5.11"
+              }
+            }
+          },
+          {
+            "id": "510a94928cdd0452",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "BlueTeamLabs/Barcode World.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -48,12 +71,12 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "bar",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
                 "extraContext": false,
-                "sortOrder": "alphabetical"
+                "sortOrder": "byModifiedTime"
               }
             }
           },
@@ -65,7 +88,8 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -85,7 +109,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "BlueTeamLabs/Log Analysis - Sysmon.md",
+                "file": "BlueTeamLabs/Barcode World.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +126,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "BlueTeamLabs/Log Analysis - Sysmon.md",
+                "file": "BlueTeamLabs/Barcode World.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +149,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "BlueTeamLabs/Log Analysis - Sysmon.md"
+                "file": "BlueTeamLabs/Barcode World.md"
               }
             }
           }
@@ -146,41 +170,45 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "2d8a8e865da74e73",
+  "active": "510a94928cdd0452",
   "lastOpenFiles": [
-    "BlueTeamLabs/Malicious PowerShell Analysis.md",
-    "BlueTeamLabs/Log Analysis - Privilege Escalation.md",
-    "BlueTeamLabs/Log Analysis - Sysmon.md",
-    "BlueTeamLabs/D3FEND.md",
+    "network/router.md",
+    "network/osi.md",
+    "network/networks.md",
     "BlueTeamLabs/Browser-Forensic-CryptoMiner.md",
+    "BlueTeamLabs/D-crypt.md",
     "BlueTeamLabs/Barcode World.md",
-    "BlueTeamLabs/Meta.md",
-    "BlueTeamLabs/Secret.md",
-    "BlueTeamLabs/Secure Shell.md",
-    "BlueTeamLabs/Shiba-Insider.md",
-    "BlueTeamLabs/Source.md",
-    "BlueTeamLabs/The Report II.md",
-    "BlueTeamLabs/The Report.md",
-    "BlueTeamLabs/Spectrum.md",
-    "Rootme/WriteUps/Steganographie/Twitter Secret Messages.md",
-    "Rootme/WriteUps/Steganographie/Steganomobile.md",
-    "Topics/Linux Privilege Escalation.md",
-    "Rootme/WriteUps/Untitled.md",
-    "Rootme/WriteUps/Steganographie",
-    "Topics/File Inclusion.md",
-    "Rootme/WriteUps/Web - Client/Javascript - Authentification.md",
-    "Rootme/WriteUps/Web - Client/HTML - boutons désactivés.md",
+    "Box.md",
+    "HackTheBox/Academy/information gathering -Web.md",
     "Rootme/WriteUps/Cryptanalyse/Substitution polyalphabétique - Vigenère.md",
-    "Rootme/WriteUps/Web - Client",
+    "Rootme/WriteUps/Cryptanalyse/Substitution monoalphabétique - César.md",
+    "Rootme/WriteUps/Cryptanalyse/Encodage - UU.md",
+    "Rootme/WriteUps/Cryptanalyse/Encodage - ASCII.md",
     "Rootme/WriteUps/Cryptanalyse/CISCO - Salted Password.md",
     "Rootme/WriteUps/Cryptanalyse/Chiffrement par décalage.md",
-    "Rootme/WriteUps/Cryptanalyse/Substitution monoalphabétique - César.md",
-    "Rootme/WriteUps/Cryptanalyse/Encodage - ASCII.md",
+    "Rootme/WriteUps/Steganographie/PNG - Least Significant Bit.md",
+    "Rootme/WriteUps/Steganographie/Twitter Secret Messages.md",
+    "Rootme/WriteUps/Steganographie/Steganomobile.md",
+    "Rootme/WriteUps/Steganographie/EXIF - Miniature.md",
+    "Rootme/WriteUps/Steganographie/EXIF - Metadata.md",
+    "Rootme/WriteUps/Steganographie/APNG - Just A PNG.md",
+    "Untitled 1.canvas",
+    "Untitled.canvas",
+    "HackTheBox/Academy/SQL basics.md",
+    "Topics/SQL Injection.md",
+    "Tools/SQLMap.md",
+    "HackTheBox/Academy/Footprinting.md",
+    "program.md",
+    "Topics/File Transfert.md",
+    "Ongolago.canvas",
+    "Ongolago.canvas",
+    "Emploi du temps cyber.canvas",
+    "file.txt",
+    "Rootme/WriteUps/Steganographie",
+    "Rootme/WriteUps/Web - Client",
     "Rootme/WriteUps/Cryptanalyse",
     "Ressources/IMG/BlueTeamLabs/BTLO-D3FEND.png",
     "Ressources/IMG/0-info-gat-web-01.png",
-    "Untitled.canvas",
-    "Emploi du temps cyber.canvas",
     "Pasted image 20231111094943.png",
     "Ressources/IMG/HTB/Machines/Keeper/Machine-Keeper-12.png",
     "Ressources/IMG/HTB/Machines/Keeper/Machine-Keeper-11.png",

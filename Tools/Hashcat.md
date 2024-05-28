@@ -1,3 +1,12 @@
+---
+tags:
+  - hash
+  - password
+  - generator
+  - hashcat
+  - username
+  - bruteforce
+---
 # Hashcat
 
 `Toujours utiliser hashid pour reconnaître le type de hash` 
@@ -151,8 +160,12 @@ cd princeprocessor-0.22
 * It spiders and scrapes a website and creates a list of the words that are present
 
 ```bash
-cewl -d <depth to spider> -m <minimum word length> -w <output wordlist> <url of website>
+cewl -d <depth to spider> -m <minimum word length> -x <maximum word length> -w <output wordlist> <url of website>
 
+# --offsite : spider external site
+# --with-numbers : append numbers to word
+# --extension : append some specified extension to word
+# --lowercase
 # email extraction : -e
 ```
 

