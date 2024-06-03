@@ -1,44 +1,20 @@
 # ECPPT Roadmap
 
-## Resource Development & Initial Access
+## <ins> I - Resource Development & Initial Access</ins>
 
 ### PowerShell for Pentesters
 
-#### Youtube based cours and labs
+#### Youtube based cours + notes and labs
 
 ###### Courses
 
-- [Personal notes](../../INE/Powershell-for-pentester.md)
-- [John hammond powershell tuto playlist](https://www.youtube.com/playlist?list=PL1H1sBF1VAKXqO_N3ZNP0aL15miJcUhw7)
-- [Powershell obfuscation in 3 min](https://www.youtube.com/watch?v=vIX5ZyzRy38&ab_channel=Hacktivity-ITSecurityFestival)
-- [Powershell obfuscation](https://www.youtube.com/watch?v=6xexyQwG7SY&ab_channel=HackerSploit)
-- [Powershell obfuscation manualy with github repo source](https://www.youtube.com/watch?v=tGFdmAh_lXE&ab_channel=t3l3machus)
-- [shellter for antivirus evasion](https://www.youtube.com/watch?v=fPTKPobJjRY&ab_channel=SendiNovriadi)
-- [Empire in 5 min](https://www.youtube.com/watch?v=3-cKDyyAGwc&ab_channel=HackerHankbook)
-- [Empire](https://www.youtube.com/watch?v=52xkWbDMUUM&ab_channel=HackerSploit)
-- [Empire from zero to hero (without pivoting)](https://www.youtube.com/watch?v=78I4fD0s6Ho&ab_channel=CYBERRANGES)
-- [From empire to metasploit session (obselet i think based on new version of empire)](https://www.youtube.com/watch?v=nO2ZvjCea0U&ab_channel=Metasploitation)
-- [Startkiller (Empire web interface)](https://www.youtube.com/watch?v=T00atUtARKE&ab_channel=MotasemHamdan)
-- [Startkiller (Empire web interface) Post Exploit](https://www.youtube.com/watch?v=TgCQ5_EbM6Y&t=65s&ab_channel=CYBERRANGES)
+- [Personal notes (recap)](../../INE/Powershell-for-pentester.md#recap)
 
 ###### Labs
 
 -
 -
 -
-
-#### Blog and article ( facultatif but recommanded )
-
-- [15 ways to bypass execution policy](https://www.netspi.com/blog/technical-blog/network-pentesting/15-ways-to-bypass-the-powershell-execution-policy/)
-- [Powershell obfuscation article (same as the video)](https://hackersploit.org/windows-red-team-defense-evasion-techniques/)
-- [Powershell obfscation repo](https://github.com/danielbohannon/Invoke-Obfuscation)
-- [Empire pivoting](https://www.snaplabs.io/insights/lateral-movement-methods-and-good-practices)
-- [Empire pivoting 2](https://ijustwannared.team/2018/02/10/empire-ception/)
-- [Empire session to meterpreter 1](https://sixdub.medium.com/empire-tool-diversity-integration-is-key-bbb0dbc0af9f)
-- [Empire session to meterpreter 2](https://www.youtube.com/watch?v=nO2ZvjCea0U&ab_channel=Metasploitation)
-- [Empire with luckyStrike phishing scenario](https://www.youtube.com/watch?v=dRebw65X5eQ&ab_channel=HackerSploit)
-- [Persistance with empire](https://www.hackingarticles.in/windows-persistence-with-powershell-empire/)
-- [WMI persistance](https://pentestlab.blog/2020/01/21/persistence-wmi-event-subscription/)
 
 #### More deeper ( facultatif )
 
@@ -52,7 +28,7 @@
 
 ### Client-Side Attacks
 
-#### cours and labs
+#### Cours and labs
 
 ###### Courses
 
@@ -70,30 +46,72 @@
 
 - [Pretexting github repo](https://github.com/L4bF0x/PhishingPretexts)
 
-### Exploit Development: Buffer Overflows
+## <ins>IV - Exploit Development</ins>
 
-#### cours and labs
+### System Security & x86 Assembly Fundamentals
+
+#### Courses and labs
 
 ###### Courses
 
-- [What is buffer overflow](https://www.techtarget.com/searchsecurity/definition/buffer-overflow)
-- [BOF explained with memory parts](https://medium.com/techloop/understanding-buffer-overflow-vulnerability-85ac22ec8cd3)
+- [Free courses + notes](../../INE/System-Security-&-x86-Assembly-Fundamentals.md)
 
 ###### Labs
 
-- [ ] [THM OSCP Prep](https://tryhackme.com/r/room/bufferoverflowprep)
-- [ ] [THM Brainpan ](https://tryhackme.com/r/room/brainpan)
-- [ ] [THM Brainstorm ( not free)](https://tryhackme.com/r/room/brainstorm)
-- [ ] [THM Gatekeeper](https://tryhackme.com/r/room/gatekeeper)
-- [ ] [THM binex](https://tryhackme.com/r/room/binex)
+###### Labs write-up
 
-#### Blog and article ( facultatif but recommanded )
+#### More deeper:
+
+#### Ressources
+
+### Exploit Development: Buffer Overflows (SEH)
+
+#### Cours and labs
+
+###### Courses
+
+- [Free courses + notes](../../INE/Buffer-Overflow-SEH.md)
+
+###### Labs
+
+- [Easy chat 3.1: (Necessary)!](https://easy-chat-server.software.informer.com/3.1/)
+- [Vulnserver ( TRUN part ) : (Necessary)!](https://github.com/stephenbradshaw/vulnserver)
+- [Vulnserver ( GMON part ) => SEH type Egghunter](https://github.com/stephenbradshaw/vulnserver)
+
+- R 3.4.4 Windows 10 system
+
+  - [Vulnerable app](https://www.exploit-db.com/apps/a642a3de7b5c2602180e73f4c04b4fbd-R-3.4.4-win.exe)
+
+- Easy File Sharing Web Server 7.2 windows
+  - [Vulnerable app](https://www.exploit-db.com/apps/60f3ff1f3cd34dec80fba130ea481f31-efssetup.exe)
+
+###### Labs write-up
+
+- [SEH TRUN write up John Hammond (excellent)](https://www.youtube.com/watch?v=yJF0YPd8lDw&ab_channel=JohnHammond)
+- [Easy chat write up article](https://www.onsecurity.io/blog/buffer-overflow-easy-chat-server-31/) OR [Easy chat (writeup in youtube)](https://www.youtube.com/watch?v=d_SUycNesDU&ab_channel=VirajDissanayake)
+
+- R 3.4.4 on a 32-bit Windows 10 system
+
+  - [Gitbook article](https://www.ired.team/offensive-security/code-injection-process-injection/binary-exploitation/seh-based-buffer-overflow)
+  - [Exploit db](https://www.exploit-db.com/exploits/47122)
+
+- Easy File Sharing Web Server 7.2 windows
+
+  - [Article](https://scriptkidd1e.wordpress.com/2017/01/07/seh-overflow-egg-hunter-in-1-go/)
+  - [Exploit db](https://www.exploit-db.com/exploits/40178/)
+
+- [Vulnrver SEH BOF and other BOF write-up ( highly recommanded)](https://zflemingg1.gitbook.io/undergrad-tutorials/walkthroughs-osce/introduction)
+
+- [Vulnserver(GMON)](https://m0chan.github.io/2019/08/21/Win32-Buffer-Overflow-SEH.html#examples)
+
+#### More deeper:
+
+###### General and stack based BOF tuto
+
+- [Buffer overflow with flipthebit ](https://youtube.com/playlist?list=PLdVIvW2RPTRxNdJeBZRcdt1JQJlmQlQMU)
+
+- [Learn BOF with cybermentor](https://www.youtube.com/playlist?list=PLLKT__MCUeix3O0DPbmuaRuR_4Hxo4m3G)
+
+- [Learn BOF with cryptocat](https://www.youtube.com/playlist?list=PLHUKi1UlEgOIc07Rfk2Jgb5fZbxDPec94)
 
 - [BOF step by step with immunity debugger](https://www.cobalt.io/blog/pentester-guide-to-exploiting-buffer-overflow-vulnerabilities)
-
-#### More deeper ( facultatif )
-
-- [Mona github repo](https://github.com/corelan/mona?source=post_page-----19e000482f27--------------------------------)
-- [BOF sheet](https://github.com/Tib3rius/Pentest-Cheatsheets/blob/master/exploits/buffer-overflows.rst)
-
-- [Automate BOF with BOFHelper](https://ethicalhackingguru.com/automate-buffer-overflow-exploitation-with-bofhelper/)
